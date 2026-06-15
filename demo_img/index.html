@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MODERN SHOP</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Pretendard", Arial, sans-serif;
+    }
+
+    body {
+      background: #f8f8f8;
+      color: #222;
+    }
+
+    header {
+      background: #111;
+      color: #fff;
+      padding: 20px 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 24px;
+      letter-spacing: 1px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      color: #ccc;
+    }
+
+    .hero {
+      position: relative;
+      height: 430px;
+      background-image: url('images/main_banner.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      color: white;
+      padding: 0 20px;
+    }
+
+    .hero h2 {
+      font-size: 56px;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 20px;
+      margin-bottom: 30px;
+    }
+
+    .hero button {
+      padding: 14px 32px;
+      border: none;
+      background: white;
+      color: #111;
+      font-size: 15px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .hero button:hover {
+      background: #111;
+      color: white;
+    }
+
+    .section {
+      padding: 60px 8%;
+    }
+
+    .section h3 {
+      font-size: 28px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+    }
+
+    .product {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      transition: 0.2s;
+    }
+
+    .product:hover {
+      transform: translateY(-5px);
+    }
+
+    .product img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      display: block;
+      background: #ddd;
+    }
+
+    .product-info {
+      padding: 18px;
+    }
+
+    .product-info h4 {
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+
+    .price {
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .product-info button {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #111;
+      background: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .product-info button:hover {
+      background: #111;
+      color: white;
+    }
+
+    footer {
+      background: #111;
+      color: #aaa;
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>MODERN SHOP</h1>
+
+    <nav>
+      <a href="index.html">HOME</a>
+      <a href="#">SHOP</a>
+      <a href="#">EVENT</a>
+      <a href="customer.html">고객센터</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h2>New Season Collection</h2>
+      <p>감각적인 데일리 아이템을 지금 만나보세요.</p>
+      <button>쇼핑하러 가기</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <h3>Best Products</h3>
+
+    <div class="products">
+
+      <div class="product">
+        <img src="images/af7bf3f011d44bf4b97e7475e230fb6b_20241014105707.webp" alt="상품 이미지">
+        <div class="product-info">
+          <h4>베이직 코튼 셔츠</h4>
+          <p class="price">39,000원</p>
+          <button>장바구니 담기</button>
+        </div>
+      </div>
+
+      <div class="product">
+        <img src="images/89859881fc98891d91c18228344e4be4.jpg" alt="상품 이미지">
+        <div class="product-info">
+          <h4>와이드 데님 팬츠</h4>
+          <p class="price">59,000원</p>
+          <button>장바구니 담기</button>
+        </div>
+      </div>
+
+      <div class="product">
+        <img src="images/c447a17ac534c977633e2b318d3f8b1a.jpg" alt="상품 이미지">
+        <div class="product-info">
+          <h4>미니멀 숄더백</h4>
+          <p class="price">49,000원</p>
+          <button>장바구니 담기</button>
+        </div>
+      </div>
+
+      <div class="product">
+        <img src="images/6153343_17743162703047_big.webp" alt="상품 이미지">
+        <div class="product-info">
+          <h4>데일리 스니커즈</h4>
+          <p class="price">69,000원</p>
+          <button>장바구니 담기</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    © 2026 MODERN SHOP. All rights reserved.
+  </footer>
+
+  <!-- TWC webchat Scripts -->
+  <script src="https://public-sdk.thecloudgate.io/sdk/cloud/Twc.plugin.js"></script>
+
+  <script>
+    (function() {
+      Twc('init', {
+        brandKey: "20250310005523cUfeEgcZwwtEZWQy-Zd0ug",
+        channelType: "chat",
+        id: "아이디",
+        buttonOption: {
+          showLauncher: true,
+          zIndex: 10,
+          bottom: 25,
+          right: 25
+        }
+      });
+    })();
+  </script>
+  <!-- End TWC webchat Scripts -->
+
+</body>
+</html>

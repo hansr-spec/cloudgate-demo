@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 콜봇 시연 · 클라우드게이트</title>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #0069ff;
+      --blue-dark: #0052cc;
+      --blue-light: #e5edff;
+      --navy: #19153d;
+      --teal: #1e7fa8;
+      --teal-light: #e0f4fb;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-500: #64748b;
+      --gray-700: #334155;
+      --white: #ffffff;
+      --shadow: 0 4px 24px rgba(0,0,0,0.10);
+      --shadow-lg: 0 8px 48px rgba(0,105,255,0.15);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-700);
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    /* removed logo-mark */
+    ._logo-mark_unused {
+      width: 36px; height: 36px; background: var(--teal);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .logo-text { font-size: 18px; font-weight: 700; color: white; }
+    .logo-text span { color: #7ecbf5; }
+    .back-btn {
+      display: flex; align-items: center; gap: 6px;
+      color: rgba(255,255,255,0.7); text-decoration: none;
+      font-size: 14px; font-weight: 500;
+      padding: 8px 16px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.15); transition: all 0.2s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+
+    /* Hero */
+    .page-hero {
+      padding-top: 64px;
+      background: linear-gradient(135deg, var(--navy) 0%, #0d2a50 50%, #1a3a60 100%);
+      padding-bottom: 60px; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute; top: -80px; right: -80px;
+      width: 450px; height: 450px;
+      background: radial-gradient(circle, rgba(30,127,168,0.2), transparent 70%);
+    }
+    .page-hero::after {
+      content: '';
+      position: absolute; bottom: -60px; left: -60px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(0,105,255,0.15), transparent 70%);
+    }
+    .hero-inner {
+      max-width: 800px; margin: 0 auto;
+      padding: 60px 40px 0; position: relative;
+    }
+    .page-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(30,127,168,0.2); border: 1px solid rgba(30,127,168,0.4);
+      color: #7ecbf5; font-size: 12px; font-weight: 700;
+      padding: 5px 16px; border-radius: 100px; letter-spacing: 0.8px; margin-bottom: 20px;
+    }
+    .page-title {
+      font-size: clamp(28px, 4vw, 48px); font-weight: 800; color: white;
+      letter-spacing: -1px; line-height: 1.15; margin-bottom: 16px;
+    }
+    .page-title .hl {
+      background: linear-gradient(135deg, #7ecbf5, #00d4ff);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .page-sub { font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.7; }
+
+    /* Main */
+    .main-wrap { max-width: 1200px; margin: 0 auto; padding: 60px 40px 80px; }
+
+    /* Tabs */
+    .tab-nav {
+      display: flex; gap: 8px; margin-bottom: 40px;
+      background: white; padding: 6px; border-radius: 14px;
+      box-shadow: var(--shadow); width: fit-content;
+    }
+    .tab-btn {
+      padding: 10px 24px; border-radius: 10px; border: none;
+      background: transparent; font-size: 14px; font-weight: 600;
+      color: var(--gray-500); cursor: pointer; transition: all 0.2s; font-family: inherit;
+    }
+    .tab-btn.active { background: var(--teal); color: white; box-shadow: 0 2px 12px rgba(30,127,168,0.35); }
+    .tab-btn:hover:not(.active) { background: var(--gray-100); color: var(--navy); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Demo Layout */
+    .demo-layout {
+      display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: start;
+    }
+
+    /* Info Side */
+    .section-label {
+      display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--teal); background: var(--teal-light);
+      padding: 4px 12px; border-radius: 100px; margin-bottom: 14px;
+    }
+    .info-title {
+      font-size: 28px; font-weight: 800; color: var(--navy);
+      letter-spacing: -0.5px; line-height: 1.25; margin-bottom: 14px;
+    }
+    .info-desc {
+      font-size: 15px; color: var(--gray-500); line-height: 1.8; margin-bottom: 32px;
+    }
+    .feature-list { display: flex; flex-direction: column; gap: 14px; }
+    .feat-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 16px; background: white; border-radius: 12px;
+      border: 1px solid var(--gray-200); transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .feat-item:hover { border-color: var(--teal); box-shadow: 0 2px 12px rgba(30,127,168,0.12); }
+    .feat-icon {
+      width: 38px; height: 38px; min-width: 38px;
+      background: var(--teal-light); border-radius: 9px;
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .feat-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+    .feat-desc { font-size: 12px; color: var(--gray-500); line-height: 1.6; }
+
+    /* ── STT Window ── */
+    .call-window {
+      background: linear-gradient(145deg, var(--navy) 0%, #0d2040 100%);
+      border-radius: 20px;
+      box-shadow: 0 12px 50px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+    .call-topbar {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .call-info { display: flex; align-items: center; gap: 10px; }
+    .call-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .call-name { font-size: 14px; font-weight: 700; color: white; }
+    .call-num { font-size: 11px; color: rgba(255,255,255,0.45); }
+    .call-status-badge {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(40,200,64,0.15); border: 1px solid rgba(40,200,64,0.3);
+      border-radius: 20px; padding: 5px 12px;
+    }
+    .live-dot { width: 7px; height: 7px; background: #28c840; border-radius: 50%; animation: blink 1.5s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    @keyframes bounceDown {
+      0%, 100% { transform: translateY(0); opacity: 0.7; }
+      50% { transform: translateY(8px); opacity: 1; }
+    }
+    .call-status-text { font-size: 12px; font-weight: 600; color: #28c840; }
+    .call-timer { font-size: 13px; color: rgba(255,255,255,0.4); }
+
+    .call-body { padding: 20px; }
+
+    /* STT 스트림 */
+    .stt-section { margin-bottom: 16px; }
+    .stt-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+    .stt-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: rgba(255,255,255,0.35);
+    }
+    .stt-live-chip {
+      background: rgba(255,80,80,0.2); border: 1px solid rgba(255,80,80,0.4);
+      color: #ff8080; font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+      padding: 2px 7px; border-radius: 4px;
+    }
+    .stt-messages { display: flex; flex-direction: column; gap: 8px; }
+    .stt-msg {
+      display: flex; gap: 8px; align-items: flex-start;
+    }
+    .speaker-chip {
+      font-size: 10px; font-weight: 700;
+      padding: 3px 8px; border-radius: 5px; min-width: 38px; text-align: center;
+      white-space: nowrap; margin-top: 2px;
+    }
+    .speaker-chip.agent { background: rgba(30,127,168,0.3); color: #7ecbf5; }
+    .speaker-chip.customer { background: rgba(0,105,255,0.25); color: #7eb3ff; }
+    .stt-bubble {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 8px 12px;
+      font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.6; flex: 1;
+    }
+
+    /* 구분선 */
+    .panel-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 14px 0; }
+
+    /* FAQ 추천 패널 */
+    .faq-panel {
+      background: rgba(0,105,255,0.1); border: 1px solid rgba(0,105,255,0.2);
+      border-radius: 12px; padding: 14px; margin-bottom: 14px;
+    }
+    .faq-panel-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+    }
+    .ai-chip { background: var(--blue); color: white; font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 10px; }
+    .faq-panel-title { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.6); }
+    .faq-item {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.05); border-radius: 8px;
+      padding: 8px 10px; margin-bottom: 6px; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .faq-item:last-child { margin-bottom: 0; }
+    .faq-item:hover { background: rgba(255,255,255,0.09); }
+    .faq-dot { width: 5px; height: 5px; background: var(--teal); border-radius: 50%; min-width: 5px; }
+    .faq-text { font-size: 11px; color: rgba(255,255,255,0.7); flex: 1; }
+    .faq-copy { font-size: 10px; color: rgba(255,255,255,0.3); }
+
+    /* AI 요약 패널 */
+    .summary-panel {
+      background: rgba(30,127,168,0.12); border: 1px solid rgba(30,127,168,0.25);
+      border-radius: 12px; padding: 14px;
+    }
+    .summary-panel-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+    }
+    .teal-chip { background: var(--teal); color: white; font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 10px; }
+    .summary-panel-title { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.6); }
+    .summary-lines { display: flex; flex-direction: column; gap: 6px; }
+    .sum-line { height: 7px; background: rgba(255,255,255,0.1); border-radius: 4px; animation: shimmer 1.8s infinite; }
+    @keyframes shimmer {
+      0%,100% { opacity: 0.6; } 50% { opacity: 1; }
+    }
+
+    /* ── FAQ Tab ── */
+    .faq-full-window {
+      background: white; border-radius: 20px;
+      box-shadow: var(--shadow); overflow: hidden;
+    }
+    .faq-full-topbar {
+      background: linear-gradient(135deg, var(--navy), #1a3060);
+      padding: 16px 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .faq-full-icon { font-size: 20px; }
+    .faq-full-title { font-size: 14px; font-weight: 700; color: white; }
+    .faq-full-body { padding: 20px; }
+    .faq-input-area {
+      display: flex; gap: 10px; margin-bottom: 20px;
+    }
+    .faq-input {
+      flex: 1; border: 1.5px solid var(--gray-200); border-radius: 10px;
+      padding: 10px 14px; font-size: 13px; color: var(--gray-500);
+      outline: none; font-family: inherit; background: var(--gray-50);
+    }
+    .faq-search-btn {
+      background: var(--teal); color: white; border: none; border-radius: 10px;
+      padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .faq-result-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--gray-500); margin-bottom: 12px;
+    }
+    .faq-answer-card {
+      border: 1.5px solid var(--gray-200); border-radius: 12px;
+      padding: 16px; margin-bottom: 12px; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .faq-answer-card:hover { border-color: var(--teal); box-shadow: 0 2px 12px rgba(30,127,168,0.1); }
+    .faq-answer-q {
+      font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .faq-q-badge {
+      background: var(--teal-light); color: var(--teal);
+      font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+    }
+    .faq-answer-a { font-size: 13px; color: var(--gray-500); line-height: 1.7; }
+    .faq-confidence {
+      display: flex; align-items: center; gap: 8px; margin-top: 10px;
+    }
+    .conf-label { font-size: 11px; color: var(--gray-500); }
+    .conf-bar { flex: 1; height: 5px; background: var(--gray-200); border-radius: 3px; overflow: hidden; }
+    .conf-fill { height: 100%; background: var(--teal); border-radius: 3px; }
+    .conf-pct { font-size: 11px; font-weight: 700; color: var(--teal); }
+
+    /* ── Summary Tab ── */
+    .sum-full-window {
+      background: white; border-radius: 20px; box-shadow: var(--shadow); overflow: hidden;
+    }
+    .sum-full-topbar {
+      background: linear-gradient(135deg, #0d2040, #1a3060);
+      padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .sum-full-title { font-size: 14px; font-weight: 700; color: white; }
+    .sum-status {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(40,200,64,0.15); border: 1px solid rgba(40,200,64,0.3);
+      border-radius: 10px; padding: 4px 10px;
+    }
+    .sum-status-dot { width: 6px; height: 6px; background: #28c840; border-radius: 50%; }
+    .sum-status-text { font-size: 11px; color: #28c840; font-weight: 600; }
+    .sum-full-body { padding: 20px; }
+    .sum-section-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--gray-500); margin-bottom: 10px;
+    }
+    .sum-transcript { margin-bottom: 16px; }
+    .sum-line {
+      display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px;
+    }
+    .sum-speaker {
+      font-size: 10px; font-weight: 700; padding: 2px 7px;
+      border-radius: 4px; min-width: 36px; text-align: center;
+    }
+    .sum-speaker.agent { background: var(--teal-light); color: var(--teal); }
+    .sum-speaker.customer { background: var(--blue-light); color: var(--blue); }
+    .sum-text { font-size: 12px; color: var(--gray-700); line-height: 1.6; flex: 1; }
+    .divider { height: 1px; background: var(--gray-200); margin: 14px 0; }
+    .ai-summary-result {
+      background: linear-gradient(135deg, #f0f8ff, #e8f4ff);
+      border: 1.5px solid rgba(30,127,168,0.2); border-radius: 12px; padding: 16px;
+    }
+    .ai-sum-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .ai-sum-title { font-size: 13px; font-weight: 700; color: var(--navy); }
+    .sum-result-item {
+      display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px;
+    }
+    .sum-result-dot { width: 6px; height: 6px; background: var(--teal); border-radius: 50%; margin-top: 5px; min-width: 6px; }
+    .sum-result-text { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+
+    @media (max-width: 900px) {
+      .demo-layout { grid-template-columns: 1fr; }
+      header { padding: 0 20px; }
+      .main-wrap { padding: 40px 20px 60px; }
+      .hero-inner { padding: 40px 20px 0; }
+    }
+
+    /* ── Feature Grid (light theme) ── */
+    .feature-section {
+      background: white;
+      padding: 80px 40px 100px;
+    }
+    .feature-section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .feature-section .section-label-dark {
+      display: inline-block;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--blue);
+      background: #e5edff;
+      border: 1px solid rgba(0,105,255,0.2);
+      padding: 4px 14px; border-radius: 100px;
+      margin-bottom: 14px;
+    }
+    .feature-section .section-title-dark {
+      font-size: clamp(26px, 3vw, 40px);
+      font-weight: 800; color: var(--navy);
+      letter-spacing: -0.8px; line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .feature-section .section-desc-dark {
+      font-size: 15px; color: var(--gray-500);
+      line-height: 1.75; margin-bottom: 40px;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .f-card {
+      background: var(--navy);
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .f-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0,105,255,0.35);
+      box-shadow: 0 12px 40px rgba(0,105,255,0.15);
+    }
+    .f-screen {
+      width: 100%; aspect-ratio: 4/3;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .f-screen.s1 { background: linear-gradient(135deg, #0d2060 0%, #1a4080 100%); }
+    .f-screen.s2 { background: linear-gradient(135deg, #0a3050 0%, #1a5070 100%); }
+    .f-screen.s3 { background: linear-gradient(135deg, #1a3040 0%, #0d4060 100%); }
+    .f-screen img { width:100%; height:100%; object-fit:cover; object-position:top; display:block; }
+    .f-info { padding: 20px 22px; background: var(--navy); }
+    .f-num { font-size: 11px; font-weight: 700; color: var(--gray-500); margin-bottom: 6px; }
+    .f-name { font-size: 16px; font-weight: 700; color: white; margin-bottom: 6px; }
+    .f-detail { font-size: 13px; color: #c2c6cb; line-height: 1.6; }
+    @media (max-width: 900px) { .feature-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="demo.html" class="logo">
+    <img src="cloudgate_bi_horizontal_txt_w.webp" alt="CloudGate" style="height:25px; display:block;">
+  </a>
+  <a href="demo.html" class="back-btn">← 메인으로</a>
+</header>
+
+
+<!-- 직접 체험 섹션 -->
+<div style="background: linear-gradient(135deg, #19153d 0%, #0d2040 100%); padding: 80px 40px;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 40px;">
+      <div style="display:inline-block; background:rgba(30,127,168,0.2); border:1px solid rgba(30,127,168,0.4); color:#7ecbf5; font-size:12px; font-weight:700; padding:5px 16px; border-radius:100px; letter-spacing:0.8px; margin-bottom:16px;">🎯 LIVE DEMO</div>
+      <h2 style="font-size: 32px; font-weight: 800; color: white; letter-spacing: -0.5px; margin-bottom: 12px;">직접 체험해보세요</h2>
+      <p style="font-size: 16px; color: rgba(255,255,255,0.55);">아래에서 클라우드게이트 콜봇 서비스를 바로 사용해볼 수 있습니다.</p>
+    </div>
+    <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; box-shadow: 0 16px 60px rgba(0,0,0,0.4);">
+      <div style="background: rgba(255,255,255,0.06); padding: 12px 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.07);">
+        <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57;"></div>
+        <div style="width:10px;height:10px;border-radius:50%;background:#febc2e;"></div>
+        <div style="width:10px;height:10px;border-radius:50%;background:#28c840;"></div>
+        <div style="margin-left:12px; background:rgba(255,255,255,0.08); border-radius:6px; padding:4px 14px; font-size:12px; color:rgba(255,255,255,0.4); font-family:monospace;">builder.thecloudgate.io</div>
+      </div>
+      <iframe
+        src="https://builder.thecloudgate.io/login"
+        style="width:100%; height:780px; border:none; display:block;"
+        allow="microphone; camera"
+        title="클라우드게이트 콜봇 체험"
+      ></iframe>
+    </div>
+
+    <!-- 스크롤 유도 화살표 -->
+    <div style="text-align:center; padding: 32px 0 8px;">
+      <button onclick="document.getElementById('feature-section').scrollIntoView({behavior:'smooth'})" style="
+        background: none; border: 2px solid rgba(255,255,255,0.25); border-radius: 50%;
+        width: 48px; height: 48px; cursor: pointer; color: white; font-size: 20px;
+        display: inline-flex; align-items: center; justify-content: center;
+        animation: bounceDown 1.8s ease-in-out infinite;
+        transition: border-color 0.2s, background 0.2s;
+      " onmouseover="this.style.borderColor='rgba(255,255,255,0.7)';this.style.background='rgba(255,255,255,0.1)'"
+         onmouseout="this.style.borderColor='rgba(255,255,255,0.25)';this.style.background='none'"
+         aria-label="기능 설명 보기">
+        ↓
+      </button>
+    </div>
+  </div>
+</div>
+
+<div style="display:none"><div class="main-wrap">
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('stt')">🎙️ 실시간 STT</button>
+    <button class="tab-btn" onclick="switchTab('faq')">💡 FAQ 추천 답변</button>
+    <button class="tab-btn" onclick="switchTab('summary')">✨ AI 자동 요약</button>
+  </div>
+
+  <!-- Tab 1: STT -->
+  <div class="tab-content active" id="tab-stt">
+    <div class="demo-layout">
+      <div class="info-side">
+        <div class="section-label">AI 콜 STT</div>
+        <h2 class="info-title">통화 내용을<br/>실시간 텍스트로 변환</h2>
+        <p class="info-desc">
+          콜 센터에서 발생하는 고객과 상담사 간의 음성 대화를
+          실시간으로 인식하여 텍스트로 변환합니다.
+          통화 내용을 채팅처럼 보고 언제든지 다시 확인할 수 있어요.
+        </p>
+        <div class="feature-list">
+          <div class="feat-item">
+            <div class="feat-icon">⚡</div>
+            <div>
+              <div class="feat-title">실시간 변환</div>
+              <div class="feat-desc">통화가 진행되는 동안 즉시 텍스트로 변환됩니다.</div>
+            </div>
+          </div>
+          <div class="feat-item">
+            <div class="feat-icon">👥</div>
+            <div>
+              <div class="feat-title">화자 분리</div>
+              <div class="feat-desc">상담사와 고객의 발화를 자동으로 구분하여 표시합니다.</div>
+            </div>
+          </div>
+          <div class="feat-item">
+            <div class="feat-icon">🌐</div>
+            <div>
+              <div class="feat-title">웹 브라우저 전화</div>
+              <div class="feat-desc">별도 장비 없이 웹에서 전화 상담과 STT를 동시에 사용합니다.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mockup-side">
+        <div class="call-window">
+          <div class="call-topbar">
+            <div class="call-info">
+              <div class="call-avatar">📞</div>
+              <div>
+                <div class="call-name">고객 홍길동</div>
+                <div class="call-num">010-1234-5678</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <div class="call-status-badge">
+                <div class="live-dot"></div>
+                <span class="call-status-text">통화 중</span>
+              </div>
+              <span class="call-timer">04:23</span>
+            </div>
+          </div>
+
+          <div class="call-body">
+            <div class="stt-section">
+              <div class="stt-header">
+                <span class="stt-label">실시간 STT 변환</span>
+                <span class="stt-live-chip">LIVE</span>
+              </div>
+              <div class="stt-messages">
+                <div class="stt-msg">
+                  <span class="speaker-chip agent">상담사</span>
+                  <div class="stt-bubble">안녕하세요, 클라우드게이트 고객센터입니다. 무엇을 도와드릴까요?</div>
+                </div>
+                <div class="stt-msg">
+                  <span class="speaker-chip customer">고객</span>
+                  <div class="stt-bubble">지난주에 신청한 서비스 해지 처리가 됐는지 확인하고 싶어요.</div>
+                </div>
+                <div class="stt-msg">
+                  <span class="speaker-chip agent">상담사</span>
+                  <div class="stt-bubble">네, 고객님. 성함과 생년월일 확인 부탁드립니다.</div>
+                </div>
+                <div class="stt-msg">
+                  <span class="speaker-chip customer">고객</span>
+                  <div class="stt-bubble">홍길동이고요, 1990년 3월 15일입니다.</div>
+                </div>
+                <div class="stt-msg">
+                  <span class="speaker-chip agent">상담사</span>
+                  <div class="stt-bubble" style="opacity:0.6;font-style:italic">확인하겠습니다... ▌</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel-divider"></div>
+
+            <div class="faq-panel">
+              <div class="faq-panel-header">
+                <div class="ai-chip">AI</div>
+                <span class="faq-panel-title">추천 답변</span>
+              </div>
+              <div class="faq-item">
+                <div class="faq-dot"></div>
+                <span class="faq-text">해지 처리는 영업일 기준 1~3일 소요됩니다.</span>
+                <span class="faq-copy">복사</span>
+              </div>
+              <div class="faq-item">
+                <div class="faq-dot"></div>
+                <span class="faq-text">해지 완료 시 등록된 이메일로 안내 메일이 발송됩니다.</span>
+                <span class="faq-copy">복사</span>
+              </div>
+            </div>
+
+            <div class="summary-panel">
+              <div class="summary-panel-header">
+                <div class="teal-chip">AI</div>
+                <span class="summary-panel-title">자동 요약 생성 중...</span>
+              </div>
+              <div class="summary-lines">
+                <div class="sum-line"></div>
+                <div class="sum-line" style="width:80%"></div>
+                <div class="sum-line" style="width:90%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: FAQ -->
+  <div class="tab-content" id="tab-faq">
+    <div class="demo-layout">
+      <div class="info-side">
+        <div class="section-label">FAQ 추천 답변</div>
+        <h2 class="info-title">고객 질문에<br/>AI가 즉시 답변 추천</h2>
+        <p class="info-desc">
+          고객이 자주 문의하는 질문을 AI가 실시간으로 분석하고,
+          가장 적합한 답변을 상담사에게 자동으로 추천합니다.
+          상담 품질을 높이고 응대 시간을 단축하세요.
+        </p>
+        <div class="feature-list">
+          <div class="feat-item">
+            <div class="feat-icon">🎯</div>
+            <div>
+              <div class="feat-title">의도 파악 기반 매칭</div>
+              <div class="feat-desc">단순 키워드가 아닌 질문의 의도를 분석해 최적 답변을 찾습니다.</div>
+            </div>
+          </div>
+          <div class="feat-item">
+            <div class="feat-icon">📋</div>
+            <div>
+              <div class="feat-title">원클릭 답변 복사</div>
+              <div class="feat-desc">추천된 답변을 클릭 한 번으로 채팅창에 바로 붙여넣습니다.</div>
+            </div>
+          </div>
+          <div class="feat-item">
+            <div class="feat-icon">🔧</div>
+            <div>
+              <div class="feat-title">FAQ 관리 대시보드</div>
+              <div class="feat-desc">자주 묻는 질문과 답변을 쉽게 등록·수정·관리할 수 있습니다.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mockup-side">
+        <div class="faq-full-window">
+          <div class="faq-full-topbar">
+            <span class="faq-full-icon">💡</span>
+            <span class="faq-full-title">AI FAQ 추천 답변</span>
+          </div>
+          <div class="faq-full-body">
+            <div class="faq-input-area">
+              <input class="faq-input" type="text" value="환불 처리 기간이 얼마나 걸리나요?" readonly />
+              <button class="faq-search-btn">검색</button>
+            </div>
+            <div class="faq-result-label">추천 답변 — 3건</div>
+
+            <div class="faq-answer-card">
+              <div class="faq-answer-q">
+                <span class="faq-q-badge">97%</span>
+                환불 처리 소요 기간 안내
+              </div>
+              <div class="faq-answer-a">환불 신청 후 영업일 기준 3~5일 내에 처리됩니다. 신용카드의 경우 카드사에 따라 1~2 영업일이 추가 소요될 수 있습니다.</div>
+              <div class="faq-confidence">
+                <span class="conf-label">신뢰도</span>
+                <div class="conf-bar"><div class="conf-fill" style="width:97%"></div></div>
+                <span class="conf-pct">97%</span>
+              </div>
+            </div>
+
+            <div class="faq-answer-card">
+              <div class="faq-answer-q">
+                <span class="faq-q-badge">84%</span>
+                부분 환불 처리 방법
+              </div>
+              <div class="faq-answer-a">부분 환불은 주문 상품 중 일부만 반품 시 적용됩니다. 고객센터를 통해 신청하시면 검토 후 처리해드립니다.</div>
+              <div class="faq-confidence">
+                <span class="conf-label">신뢰도</span>
+                <div class="conf-bar"><div class="conf-fill" style="width:84%"></div></div>
+                <span class="conf-pct">84%</span>
+              </div>
+            </div>
+
+            <div class="faq-answer-card">
+              <div class="faq-answer-q">
+                <span class="faq-q-badge">71%</span>
+                환불 불가 사유 안내
+              </div>
+              <div class="faq-answer-a">사용된 서비스, 디지털 콘텐츠, 개봉된 상품 등은 환불이 제한될 수 있습니다. 자세한 내용은 이용약관을 확인해주세요.</div>
+              <div class="faq-confidence">
+                <span class="conf-label">신뢰도</span>
+                <div class="conf-bar"><div class="conf-fill" style="width:71%"></div></div>
+                <span class="conf-pct">71%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: Summary -->
+  <div class="tab-content" id="tab-summary">
+    <div class="demo-layout">
+      <div class="info-side">
+        <div class="section-label">AI 자동 요약</div>
+        <h2 class="info-title">콜 상담 내용을<br/>AI가 자동으로 정리</h2>
+        <p class="info-desc">
+          고객과 상담사 간의 콜 상담 내용을 AI가 자동으로 요약하고 분석합니다.
+          후처리 시간을 대폭 단축하고, 중요한 내용을 빠짐없이 기록하세요.
+        </p>
+        <div class="feature-list">
+          <div class="feat-item">
+            <div class="feat-icon">⚡</div>
+            <div>
+              <div class="feat-title">통화 종료 즉시 요약</div>
+              <div class="feat-desc">별도 작업 없이 통화가 끝나면 자동으로 요약이 생성됩니다.</div>
+            </div>
+          </div>
+          <div class="feat-item">
+            <div class="feat-icon">🎫</div>
+            <div>
+              <div class="feat-title">티켓 자동 저장</div>
+              <div class="feat-desc">요약 내용이 상담 티켓에 자동 저장되어 이력 관리가 편합니다.</div>
+            </div>
+          </div>
+          <div class="feat-item">
+            <div class="feat-icon">📊</div>
+            <div>
+              <div class="feat-title">상담 통계 분석</div>
+              <div class="feat-desc">요약 데이터를 기반으로 주요 이슈와 트렌드를 파악합니다.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mockup-side">
+        <div class="sum-full-window">
+          <div class="sum-full-topbar">
+            <span class="sum-full-title">✨ AI 상담 자동 요약</span>
+            <div class="sum-status">
+              <div class="sum-status-dot"></div>
+              <span class="sum-status-text">요약 완료</span>
+            </div>
+          </div>
+          <div class="sum-full-body">
+            <div class="sum-section-title">대화 기록 (요약 원문)</div>
+            <div class="sum-transcript">
+              <div class="sum-line">
+                <span class="sum-speaker agent">상담사</span>
+                <span class="sum-text">안녕하세요, 무엇을 도와드릴까요?</span>
+              </div>
+              <div class="sum-line">
+                <span class="sum-speaker customer">고객</span>
+                <span class="sum-text">서비스 해지 신청을 했는데 처리가 됐는지 확인하고 싶어요.</span>
+              </div>
+              <div class="sum-line">
+                <span class="sum-speaker agent">상담사</span>
+                <span class="sum-text">확인해보니 해지 신청이 접수되어 처리 중입니다. 영업일 기준 1~2일 후 완료됩니다.</span>
+              </div>
+              <div class="sum-line">
+                <span class="sum-speaker customer">고객</span>
+                <span class="sum-text">감사합니다. 완료되면 연락주실 수 있나요?</span>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="ai-summary-result">
+              <div class="ai-sum-header">
+                <div class="teal-chip">AI 요약</div>
+                <span class="ai-sum-title">핵심 내용 정리</span>
+              </div>
+              <div class="sum-result-item">
+                <div class="sum-result-dot"></div>
+                <span class="sum-result-text"><strong>문의 유형:</strong> 서비스 해지 처리 현황 확인</span>
+              </div>
+              <div class="sum-result-item">
+                <div class="sum-result-dot"></div>
+                <span class="sum-result-text"><strong>처리 결과:</strong> 해지 신청 접수 완료, 영업일 1~2일 내 처리 예정</span>
+              </div>
+              <div class="sum-result-item">
+                <div class="sum-result-dot"></div>
+                <span class="sum-result-text"><strong>고객 요청:</strong> 처리 완료 시 연락 요청</span>
+              </div>
+              <div class="sum-result-item">
+                <div class="sum-result-dot"></div>
+                <span class="sum-result-text"><strong>후속 조치:</strong> 완료 알림 발송 필요</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div><!-- /main-wrap display:none -->
+
+<!-- Feature Grid Section -->
+<div class="feature-section" id="feature-section">
+  <div class="feature-section-inner">
+    <div class="section-label-dark">AI Call Bot</div>
+    <h2 class="section-title-dark">AI 콜봇</h2>
+    <p class="section-desc-dark">AI 콜봇이 고객 문의를 실시간으로 응대하며,<br/>고객 응대 품질은 높이고 운영 효율은 향상시킵니다.</p>
+
+    <div class="feature-grid">
+      <!-- Card 1 -->
+      <div class="f-card">
+        <div class="f-screen s1">
+          <img src="img5.png" alt="AI 콜 STT">
+        </div>
+        <div class="f-info">
+          <div class="f-num">01</div>
+          <div class="f-name">24시간 무중단 상담</div>
+          <p class="f-detail">24시간 365일 AI가 고객 문의를 <br>응대하여 대기 없이 신속한 상담 서비스를 제공합니다.</br></p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="f-card">
+        <div class="f-screen s2">
+          <img src="img6.png" alt="FAQ 추천 답변">
+        </div>
+        <div class="f-info">
+          <div class="f-num">02</div>
+          <div class="f-name">AI → 상담사 연결</div>
+          <p class="f-detail">AI 콜봇과의 상담 내용을 그대로 전달하여 <br>상담사가 끊김 없이 상담을 이어갑니다.</br></p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="f-card">
+        <div class="f-screen s3">
+          <img src="img7.png" alt="AI 자동 요약">
+        </div>
+        <div class="f-info">
+          <div class="f-num">03</div>
+          <div class="f-name">AI 자동 요약</div>
+          <p class="f-detail">통화 종료 후 AI가 상담 내용을 자동으로 요약해 티켓에 저장합니다. 후처리 시간을 대폭 줄여줍니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchTab(name) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+</script>
+
+
+
+<footer style="background:#19153d; padding:36px 40px; text-align:center;">
+  <img src="https://thewc.co.kr/wp-content/uploads/2023/12/twc_logo.png" alt="TWC" style="height:28px; display:block; margin:0 auto 8px;">
+  <p style="font-size:13px; color:rgb(116, 116, 116);">더화이트커뮤니케이션(주)</p>
+</footer>
+
+</body>
+</html>

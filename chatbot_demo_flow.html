@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TAICAN · 데이터 학습</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #5578F0;
+      --primary-light: #EEF1FE;
+      --primary-dark: #3d5cd4;
+      --bg: #FCFCFC;
+      --surface: #FFFFFF;
+      --border: rgba(47,43,61,0.12);
+      --text: rgba(47,43,61,0.78);
+      --text-sub: rgba(47,43,61,0.45);
+      --text-hint: rgba(47,43,61,0.3);
+      --sidebar-w: 260px;
+      --topbar-h: 64px;
+      --radius: 8px;
+      --shadow-sm: 0 2px 8px rgba(47,43,61,0.08);
+      --shadow-md: 0 4px 20px rgba(47,43,61,0.12);
+    }
+
+    body {
+      font-family: 'Public Sans', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.467;
+    }
+
+    .step { display: none; }
+    .step.active { display: flex; }
+
+    /* ═══════════════════════════
+       공통 레이아웃
+    ═══════════════════════════ */
+    .layout {
+      min-height: 100vh;
+      flex-direction: row;
+    }
+
+    /* 사이드바 */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 10;
+    }
+    .sidebar-logo {
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+    }
+    .logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: rgba(47,43,61,0.9);
+      letter-spacing: -0.3px;
+    }
+    .sidebar-toggle {
+      margin-left: auto;
+      color: var(--text-hint);
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .sidebar-body {
+      padding: 12px 0;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .sidebar-section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-hint);
+      padding: 8px 24px 4px;
+    }
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      margin: 2px 12px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+    .sidebar-item:hover { background: var(--primary-light); color: var(--primary); }
+    .sidebar-item.active { background: var(--primary); color: white; }
+    .sidebar-item .s-icon { width: 18px; height: 18px; opacity: 0.7; flex-shrink: 0; }
+    .sidebar-item.active .s-icon { opacity: 1; filter: brightness(10); }
+
+    /* 메인 영역 */
+    .main-wrap {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* 상단 바 */
+    .topbar {
+      height: var(--topbar-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      position: sticky;
+      top: 0;
+      z-index: 9;
+    }
+    .topbar-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .topbar-icon-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: background 0.15s;
+      font-size: 17px;
+    }
+    .topbar-icon-btn:hover { background: var(--primary-light); color: var(--primary); }
+    .topbar-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* 콘텐츠 */
+    .content {
+      padding: 28px;
+      flex: 1;
+    }
+    .content-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .page-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: rgba(47,43,61,0.9);
+      margin-bottom: 4px;
+    }
+    .page-desc {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+    .usage-info {
+      text-align: right;
+    }
+    .usage-num {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+    .usage-bar-bg {
+      width: 160px;
+      height: 6px;
+      background: rgba(47,43,61,0.08);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .usage-bar-fill {
+      height: 100%;
+      width: 0.018%;
+      background: var(--primary);
+      border-radius: 3px;
+    }
+
+    /* 필터 카드 */
+    .filter-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-end;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .f-group { display: flex; flex-direction: column; gap: 5px; }
+    .f-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+    .f-select, .f-input {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 9px 12px;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .f-select { min-width: 180px; cursor: pointer; padding-right: 28px;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 10px center;
+    }
+    .f-input { min-width: 280px; }
+    .f-select:focus, .f-input:focus { border-color: var(--primary); }
+    .f-input::placeholder { color: var(--text-hint); }
+    .btn-primary {
+      padding: 9px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
+
+    /* 툴바 */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .tab-list { display: flex; gap: 4px; }
+    .tab-item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+    .tab-item:hover { background: var(--primary-light); color: var(--primary); }
+    .btn-upload {
+      display: flex; align-items: center; gap: 6px;
+      padding: 9px 18px;
+      background: var(--primary);
+      color: white; border: none;
+      border-radius: var(--radius);
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.15s;
+    }
+    .btn-upload:hover { background: var(--primary-dark); }
+
+    /* 테이블 */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .table-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .help-icon {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: rgba(47,43,61,0.1);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700;
+      color: var(--text-sub);
+      cursor: pointer;
+    }
+    .btn-add {
+      display: flex; align-items: center; gap: 5px;
+      padding: 7px 14px;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      background: white;
+      border-radius: var(--radius);
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.15s;
+    }
+    .btn-add:hover { background: var(--primary-light); }
+
+    .t-head {
+      display: grid;
+      grid-template-columns: 1fr 190px 110px 110px 90px 70px;
+      padding: 10px 20px;
+      background: rgba(47,43,61,0.03);
+      border-bottom: 1px solid var(--border);
+    }
+    .t-head span {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+      letter-spacing: 0.3px;
+    }
+    .t-row {
+      display: grid;
+      grid-template-columns: 1fr 190px 110px 110px 90px 70px;
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(47,43,61,0.04);
+      font-size: 13px;
+      align-items: center;
+      transition: background 0.1s;
+    }
+    .t-row:hover { background: rgba(47,43,61,0.02); }
+    .t-row:last-child { border-bottom: none; }
+    .badge-done {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(85,120,240,0.1);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .badge-done::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+    .action-btn {
+      color: var(--text-hint);
+      cursor: pointer;
+      font-size: 16px;
+      transition: color 0.15s;
+      background: none; border: none; padding: 0;
+      font-family: inherit;
+    }
+    .action-btn:hover { color: var(--primary); }
+    .action-btns { display: flex; gap: 12px; }
+
+    /* 페이지네이션 */
+    .t-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: rgba(47,43,61,0.02);
+      border-top: 1px solid var(--border);
+    }
+    .show-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--text-sub);
+    }
+    .show-select {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text);
+      background: white;
+    }
+    .page-btns { display: flex; gap: 4px; }
+    .page-btn {
+      width: 30px; height: 30px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text-sub);
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .page-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .page-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
+    .page-btn.arrow { color: var(--text-hint); }
+
+    /* ═══════════════════════════
+       모달
+    ═══════════════════════════ */
+    .overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(47,43,61,0.4);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .overlay.show { display: flex; }
+    .modal {
+      background: white;
+      border-radius: 12px;
+      padding: 32px 36px;
+      width: 480px;
+      box-shadow: 0 24px 64px rgba(47,43,61,0.2);
+      text-align: center;
+      animation: modalIn 0.2s ease;
+    }
+    @keyframes modalIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-title {
+      font-size: 20px; font-weight: 700;
+      color: rgba(47,43,61,0.9);
+      margin-bottom: 6px;
+    }
+    .modal-desc {
+      font-size: 13px; color: var(--text-sub);
+      margin-bottom: 24px;
+    }
+    .drop-zone {
+      border: 2px dashed rgba(47,43,61,0.2);
+      border-radius: 10px;
+      padding: 32px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .drop-zone input[type=file] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer;
+      width: 100%; height: 100%;
+    }
+    .drop-icon-wrap {
+      width: 48px; height: 48px;
+      border-radius: 10px;
+      background: var(--primary-light);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 22px;
+    }
+    .drop-main-text { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .drop-hint-text { font-size: 12px; color: var(--text-sub); }
+
+    .file-info-bar {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: var(--primary-light);
+      border: 1px solid rgba(85,120,240,0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .file-info-bar.show { display: flex; }
+    .file-info-icon {
+      width: 36px; height: 36px;
+      background: white;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .file-info-name { font-size: 13px; font-weight: 600; color: rgba(47,43,61,0.9); }
+    .file-info-size { font-size: 11px; color: var(--text-sub); margin-top: 1px; }
+
+    .modal-actions {
+      display: flex; gap: 10px; justify-content: center;
+    }
+    .btn-cancel {
+      padding: 10px 28px;
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: var(--radius);
+      font-size: 14px; font-weight: 600;
+      color: var(--text-sub);
+      cursor: pointer; font-family: inherit;
+      transition: all 0.15s;
+    }
+    .btn-cancel:hover { border-color: var(--text-sub); color: var(--text); }
+    .btn-register {
+      padding: 10px 28px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.15s;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .btn-register.on { opacity: 1; pointer-events: auto; }
+    .btn-register.on:hover { background: var(--primary-dark); }
+
+    /* ═══════════════════════════
+       STEP 2: 학습 중 (TAICAN 안에서)
+    ═══════════════════════════ */
+    #step2 { flex-direction: row; }
+    #step2 .main-wrap { background: var(--bg); }
+    .training-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+      text-align: center;
+    }
+    .training-file-chip {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 20px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow-sm);
+    }
+    .training-file-icon { font-size: 20px; }
+    .training-file-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .training-file-size { font-size: 11px; color: var(--text-sub); }
+
+    .spinner-wrap {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(85,120,240,0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .training-title-text {
+      font-size: 24px; font-weight: 700;
+      color: rgba(47,43,61,0.9);
+      margin-bottom: 8px;
+    }
+    .training-sub-text {
+      font-size: 14px; color: var(--text-sub);
+      margin-bottom: 36px;
+    }
+
+    .progress-outer {
+      width: 100%; max-width: 480px; margin: 0 auto 8px;
+    }
+    .progress-meta {
+      display: flex; justify-content: space-between;
+      font-size: 12px; color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+    .progress-pct-val { color: var(--primary); font-weight: 700; }
+    .progress-track {
+      height: 8px;
+      background: rgba(47,43,61,0.08);
+      border-radius: 4px; overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--primary), #7b9fff);
+      border-radius: 4px;
+      transition: width 0.35s ease;
+    }
+
+    .log-area {
+      width: 100%; max-width: 480px;
+      margin: 28px auto 0;
+      text-align: left;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .log-row {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--text-hint);
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(47,43,61,0.04);
+      transition: color 0.3s;
+    }
+    .log-row:last-child { border-bottom: none; }
+    .log-row.done { color: var(--text-sub); }
+    .log-row.running { color: var(--primary); font-weight: 500; }
+    .log-icon { width: 18px; text-align: center; font-size: 14px; }
+
+    /* ═══════════════════════════
+       STEP 3: 완료 (TAICAN 안에서)
+    ═══════════════════════════ */
+    #step3 { flex-direction: row; }
+    .complete-content {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 60px 40px; text-align: center;
+    }
+    .check-circle {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: rgba(85,190,100,0.12);
+      border: 2px solid rgba(85,190,100,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px;
+      margin: 0 auto 24px;
+      animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.4); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .complete-title {
+      font-size: 24px; font-weight: 700;
+      color: rgba(47,43,61,0.9);
+      margin-bottom: 8px;
+    }
+    .complete-sub {
+      font-size: 14px; color: var(--text-sub);
+      margin-bottom: 36px;
+    }
+
+    .stats-row {
+      display: flex; gap: 16px; justify-content: center; margin-bottom: 40px;
+    }
+    .stat-box {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 28px;
+      box-shadow: var(--shadow-sm);
+      min-width: 130px;
+    }
+    .stat-val {
+      font-size: 28px; font-weight: 700;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label { font-size: 12px; color: var(--text-sub); }
+
+    .btn-go-demo {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 40px;
+      background: var(--primary);
+      color: white; border: none;
+      border-radius: var(--radius);
+      font-size: 16px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      box-shadow: 0 4px 16px rgba(85,120,240,0.35);
+      transition: all 0.2s;
+    }
+    .btn-go-demo:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(85,120,240,0.4);
+    }
+    .auto-text {
+      margin-top: 12px;
+      font-size: 13px; color: var(--text-hint);
+    }
+
+    /* ═══════════════════════════
+       STEP 4: 챗봇 데모
+    ═══════════════════════════ */
+    #step4 { flex-direction: column; }
+    .demo-header {
+      height: var(--topbar-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px;
+      flex-shrink: 0;
+    }
+    .demo-header-left { display: flex; align-items: center; gap: 14px; }
+    .demo-logo-wrap { display: flex; align-items: center; gap: 8px; }
+    .demo-logo-text { font-size: 16px; font-weight: 700; color: rgba(47,43,61,0.9); }
+    .trained-badge {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(85,190,100,0.1);
+      border: 1px solid rgba(85,190,100,0.25);
+      border-radius: 20px; padding: 4px 12px;
+    }
+    .trained-dot { width: 6px; height: 6px; background: #55be64; border-radius: 50%; }
+    .trained-label { font-size: 12px; font-weight: 600; color: #3da84a; }
+    .demo-header-right { display: flex; gap: 8px; }
+    .btn-back {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: var(--radius);
+      font-size: 13px; font-weight: 600;
+      color: var(--text-sub);
+      cursor: pointer; font-family: inherit;
+      transition: all 0.15s;
+    }
+    .btn-back:hover { border-color: var(--primary); color: var(--primary); }
+    .demo-iframe {
+      flex: 1;
+      border: none;
+      display: block;
+      width: 100%;
+      min-height: calc(100vh - var(--topbar-h));
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════
+     STEP 1: 데이터 업로드 화면
+═══════════════════════════════ -->
+<div class="step layout active" id="step1">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="8" fill="#5578F0"/>
+        <path d="M7 22L12 13L17 18L21 12L25 16" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="25" cy="16" r="2" fill="white"/>
+      </svg>
+      <span class="logo-text">taican</span>
+      <div class="sidebar-toggle">⟨</div>
+    </div>
+    <div class="sidebar-body">
+      <div class="sidebar-section-label">AI 챗봇 관리</div>
+      <div class="sidebar-item active">
+        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        데이터 학습
+      </div>
+      <div class="sidebar-section-label">시스템 관리</div>
+      <div class="sidebar-item">
+        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="14" rx="2"/>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+        </svg>
+        워크플레이스 관리
+      </div>
+      <div class="sidebar-item">
+        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        타이칸 회원 관리
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-wrap">
+    <div class="topbar">
+      <span class="topbar-title">타이칸</span>
+      <div class="topbar-actions">
+        <div class="topbar-icon-btn" title="다크모드">🌙</div>
+        <div class="topbar-icon-btn" title="도움말">ℹ️</div>
+        <div class="topbar-avatar">A</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="content-header">
+        <div>
+          <div class="page-title">데이터 학습</div>
+          <div class="page-desc">텍스트 기반 문서 업로드를 통해, 타이칸이 학습하여 더 정확하게 응답합니다.</div>
+        </div>
+        <div class="usage-info">
+          <div class="usage-num">0.09MB / 500MB</div>
+          <div class="usage-bar-bg"><div class="usage-bar-fill"></div></div>
+        </div>
+      </div>
+
+      <div class="filter-card">
+        <div class="f-group">
+          <div class="f-label">워크플레이스</div>
+          <select class="f-select"><option>챗봇테스트용_2250</option></select>
+        </div>
+        <div class="f-group">
+          <div class="f-label">브랜드</div>
+          <select class="f-select"><option>테스트용001_7872</option></select>
+        </div>
+        <div class="f-group">
+          <div class="f-label">검색</div>
+          <input class="f-input" type="text" placeholder="FAQ 질문 검색" />
+        </div>
+        <button class="btn-primary">검색</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="tab-list">
+          <div class="tab-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            FAQ등록
+          </div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-card-header">
+          <div class="table-card-title">
+            데이터 업로드 목록 (0건 / 0MB)
+            <span class="help-icon">?</span>
+          </div>
+          <button class="btn-add" onclick="openUploadModal()">+ 데이터 추가</button>
+        </div>
+        <div class="t-head">
+          <span>질문</span>
+          <span>등록일</span>
+          <span>업데이트일</span>
+          <span>상태</span>
+          <span></span>
+          <span>삭제</span>
+        </div>
+        <div style="padding: 60px 20px; text-align: center; color: var(--text-sub); font-size: 14px; line-height: 1.8;">
+          학습 데이터가 없습니다.<br/>데이터를 추가해주세요.
+        </div>
+        <div class="t-footer">
+          <div class="show-row">
+            Show
+            <select class="show-select"><option>50</option></select>
+          </div>
+          <div class="page-btns">
+            <button class="page-btn arrow">‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn arrow">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 업로드 모달 -->
+<div class="overlay" id="uploadModal">
+  <div class="modal">
+    <div class="modal-title">데이터 업로드</div>
+    <div class="modal-desc">학습 데이터를 업로드할 수 있습니다.</div>
+
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept=".pdf,.xlsx,.docx,.txt" onchange="onFileSelected(this)" />
+      <div class="drop-icon-wrap">⬆️</div>
+      <div class="drop-main-text">파일을 업로드해주세요.</div>
+      <div class="drop-hint-text">(지원 확장자: pdf, xlsx, docx, txt / 최대 20MB)</div>
+    </div>
+
+    <div class="file-info-bar" id="fileInfoBar">
+      <div class="file-info-icon">📊</div>
+      <div>
+        <div class="file-info-name" id="fileInfoName"></div>
+        <div class="file-info-size" id="fileInfoSize"></div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeUploadModal()">취소</button>
+      <button class="btn-register" id="btnRegister" onclick="startTraining()">등록</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     STEP 2: 학습 진행 (TAICAN 레이아웃 유지)
+═══════════════════════════════ -->
+<div class="step layout" id="step2">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="#5578F0"/>
+        <path d="M7 22L12 13L17 18L21 12L25 16" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="25" cy="16" r="2" fill="white"/>
+      </svg>
+      <span class="logo-text">taican</span>
+    </div>
+    <div class="sidebar-body">
+      <div class="sidebar-section-label">AI 챗봇 관리</div>
+      <div class="sidebar-item active">
+        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        데이터 학습
+      </div>
+    </div>
+  </nav>
+  <div class="main-wrap">
+    <div class="topbar">
+      <span class="topbar-title">타이칸 · 데이터 학습 중</span>
+      <div class="topbar-actions">
+        <div class="topbar-icon-btn">🌙</div>
+        <div class="topbar-icon-btn">ℹ️</div>
+        <div class="topbar-avatar">A</div>
+      </div>
+    </div>
+    <div class="training-content">
+      <div class="training-file-chip">
+        <div class="training-file-icon">📊</div>
+        <div>
+          <div class="training-file-name" id="t2FileName">파일명</div>
+          <div class="training-file-size" id="t2FileMeta">업로드 완료</div>
+        </div>
+      </div>
+
+      <div class="spinner-wrap"><div class="spinner"></div></div>
+      <div class="training-title-text">AI 학습을 진행하고 있습니다</div>
+      <div class="training-sub-text" id="t2SubText">잠시만 기다려주세요...</div>
+
+      <div class="progress-outer">
+        <div class="progress-meta">
+          <span>학습 진행률</span>
+          <span class="progress-pct-val" id="t2Pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-bar" id="t2Bar"></div>
+        </div>
+      </div>
+
+      <div class="log-area" id="logArea">
+        <div class="log-row" id="lg0"><span class="log-icon">○</span> 파일 업로드 및 검증 중...</div>
+        <div class="log-row" id="lg1"><span class="log-icon">○</span> 텍스트 파싱 및 전처리 중...</div>
+        <div class="log-row" id="lg2"><span class="log-icon">○</span> FAQ 데이터 분류 및 분석 중...</div>
+        <div class="log-row" id="lg3"><span class="log-icon">○</span> 벡터 임베딩 생성 중...</div>
+        <div class="log-row" id="lg4"><span class="log-icon">○</span> RAG 인덱스 구축 중...</div>
+        <div class="log-row" id="lg5"><span class="log-icon">○</span> 챗봇 모델에 적용 중...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     STEP 3: 학습 완료
+═══════════════════════════════ -->
+<div class="step layout" id="step3">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="#5578F0"/>
+        <path d="M7 22L12 13L17 18L21 12L25 16" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="25" cy="16" r="2" fill="white"/>
+      </svg>
+      <span class="logo-text">taican</span>
+    </div>
+    <div class="sidebar-body">
+      <div class="sidebar-section-label">AI 챗봇 관리</div>
+      <div class="sidebar-item active">
+        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        데이터 학습
+      </div>
+    </div>
+  </nav>
+  <div class="main-wrap">
+    <div class="topbar">
+      <span class="topbar-title">타이칸 · 학습 완료</span>
+      <div class="topbar-actions">
+        <div class="topbar-icon-btn">🌙</div>
+        <div class="topbar-icon-btn">ℹ️</div>
+        <div class="topbar-avatar">A</div>
+      </div>
+    </div>
+    <div class="complete-content">
+      <div class="check-circle">✓</div>
+      <div class="complete-title">학습이 완료되었습니다!</div>
+      <div class="complete-sub">AI 챗봇이 업로드된 데이터를 성공적으로 학습했습니다.</div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-val">247</div>
+          <div class="stat-label">학습된 FAQ 항목</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">99.2%</div>
+          <div class="stat-label">학습 정확도</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="t3FileName" style="font-size:13px;padding-top:4px;word-break:break-all;">-</div>
+          <div class="stat-label">학습 완료 파일</div>
+        </div>
+      </div>
+
+      <button class="btn-go-demo" onclick="gotoDemo()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        챗봇 데모 시작하기
+      </button>
+      <div class="auto-text" id="autoText">5초 후 자동으로 이동합니다...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     STEP 4: 챗봇 데모
+═══════════════════════════════ -->
+<div class="step" id="step4" style="flex-direction:column;">
+  <div class="demo-header">
+    <div class="demo-header-left">
+      <div class="demo-logo-wrap">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="#5578F0"/>
+          <path d="M7 22L12 13L17 18L21 12L25 16" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="25" cy="16" r="2" fill="white"/>
+        </svg>
+        <span class="demo-logo-text">taican</span>
+      </div>
+      <div class="trained-badge">
+        <div class="trained-dot"></div>
+        <span class="trained-label">학습 완료 · 데모 모드</span>
+      </div>
+    </div>
+    <div class="demo-header-right">
+      <button class="btn-back" onclick="goBack()">
+        ← 다시 학습하기
+      </button>
+    </div>
+  </div>
+  <iframe id="chatbotFrame" class="demo-iframe" src="" title="챗봇 데모" allow="microphone; camera"></iframe>
+</div>
+
+<script>
+  let pickedName = '', pickedSize = '', countdown = 5, timer = null;
+
+  function openUploadModal() {
+    document.getElementById('uploadModal').classList.add('show');
+  }
+
+  function closeUploadModal() {
+    document.getElementById('uploadModal').classList.remove('show');
+    resetModal();
+  }
+
+  function resetModal() {
+    pickedName = ''; pickedSize = '';
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileInfoBar').classList.remove('show');
+    document.getElementById('dropZone').style.display = '';
+    document.getElementById('btnRegister').classList.remove('on');
+  }
+
+  function triggerPicker() {
+    if (!pickedName) document.getElementById('fileInput').click();
+  }
+
+  function onFileSelected(input) {
+    if (!input.files || !input.files[0]) return;
+    const f = input.files[0];
+    pickedName = f.name;
+    const kb = f.size / 1024;
+    pickedSize = kb > 1024 ? (kb / 1024).toFixed(2) + ' MB' : kb.toFixed(1) + ' KB';
+    document.getElementById('fileInfoName').textContent = pickedName;
+    document.getElementById('fileInfoSize').textContent = pickedSize;
+    document.getElementById('fileInfoBar').classList.add('show');
+    document.getElementById('dropZone').style.display = 'none';
+    document.getElementById('btnRegister').classList.add('on');
+  }
+
+  function startTraining() {
+    closeUploadModal();
+    document.getElementById('t2FileName').textContent = pickedName || '학습데이터.xlsx';
+    document.getElementById('t2FileMeta').textContent = (pickedSize || '0.03 MB') + ' · 업로드 완료';
+    showStep('step2');
+    runTraining();
+  }
+
+  function runTraining() {
+    const steps = [
+      { id: 'lg0', pct: 14, text: '파일을 분석하고 있어요...' },
+      { id: 'lg1', pct: 30, text: '텍스트를 정제하고 있어요...' },
+      { id: 'lg2', pct: 50, text: 'FAQ 항목을 분류하고 있어요...' },
+      { id: 'lg3', pct: 66, text: '벡터 임베딩을 생성하고 있어요...' },
+      { id: 'lg4', pct: 82, text: 'RAG 인덱스를 구축하고 있어요...' },
+      { id: 'lg5', pct: 100, text: '챗봇 모델에 적용 중이에요...' },
+    ];
+    let i = 0;
+    const tick = () => {
+      if (i >= steps.length) { setTimeout(showComplete, 500); return; }
+      const s = steps[i];
+      if (i > 0) {
+        const prev = document.getElementById(steps[i-1].id);
+        prev.classList.remove('running');
+        prev.classList.add('done');
+        prev.querySelector('.log-icon').textContent = '✓';
+      }
+      const cur = document.getElementById(s.id);
+      cur.classList.add('running');
+      cur.querySelector('.log-icon').textContent = '►';
+      setProgress(s.pct);
+      document.getElementById('t2SubText').textContent = s.text;
+      i++;
+      setTimeout(tick, 950);
+    };
+    tick();
+  }
+
+  function setProgress(pct) {
+    document.getElementById('t2Bar').style.width = pct + '%';
+    document.getElementById('t2Pct').textContent = pct + '%';
+  }
+
+  function showComplete() {
+    const last = document.getElementById('lg5');
+    last.classList.remove('running'); last.classList.add('done');
+    last.querySelector('.log-icon').textContent = '✓';
+    document.getElementById('t3FileName').textContent = pickedName || '학습데이터.xlsx';
+    showStep('step3');
+    startCountdown();
+  }
+
+  function startCountdown() {
+    countdown = 5;
+    updateCountdown();
+    timer = setInterval(() => {
+      countdown--;
+      updateCountdown();
+      if (countdown <= 0) { clearInterval(timer); gotoDemo(); }
+    }, 1000);
+  }
+
+  function updateCountdown() {
+    document.getElementById('autoText').textContent = countdown + '초 후 자동으로 이동합니다...';
+  }
+
+  function gotoDemo() {
+    clearInterval(timer);
+    document.getElementById('chatbotFrame').src = 'easycall_test_chatbot.html';
+    showStep('step4');
+  }
+
+  function goBack() {
+    document.getElementById('chatbotFrame').src = '';
+    for (let i = 0; i < 6; i++) {
+      const el = document.getElementById('lg' + i);
+      el.classList.remove('done', 'running');
+      el.querySelector('.log-icon').textContent = '○';
+    }
+    setProgress(0);
+    resetModal();
+    showStep('step1');
+  }
+
+  function showStep(id) {
+    document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  // 드래그&드롭
+  const dz = document.getElementById('dropZone');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f) {
+      const dt = new DataTransfer(); dt.items.add(f);
+      document.getElementById('fileInput').files = dt.files;
+      onFileSelected(document.getElementById('fileInput'));
+    }
+  });
+</script>
+</body>
+</html>
