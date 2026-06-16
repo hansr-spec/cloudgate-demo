@@ -182,7 +182,7 @@
       display: none;
       border-radius: 24px;
       overflow: hidden;
-      width: 985px;
+      width: min(985px, 100%);
       min-height: 550px;
       margin: 0 auto;
       position: relative;
@@ -799,9 +799,12 @@
     /* ── Responsive ── */
     @media (max-width: 900px) {
       .case-demo-wrap { padding: 40px 20px 50px; }
-      .case-card { min-height: 560px; }
+      .case-card { min-height: auto; width: 100%; border-radius: 16px; }
       .case-card-right { display: none; }
       .case-card-content { padding: 36px 28px; }
+      .case-card-wrap { overflow: hidden; }
+      .case-arrow.prev { left: 8px; }
+      .case-arrow.next { right: 8px; }
       .demo-main { grid-template-columns: 1fr; }
       .feat-grid { grid-template-columns: 1fr; }
       .usecase-grid { grid-template-columns: 1fr; }
@@ -809,6 +812,10 @@
       .demo-header-bar { padding: 24px 20px; }
       .demo-main { padding: 24px 20px 40px; }
       .features-section, .usecase-section { padding: 60px 20px; }
+      /* feature grid 인라인 섹션 */
+      #feature-section { padding: 60px 20px 80px !important; }
+      #feature-section > div > div:last-child { grid-template-columns: 1fr !important; }
+      .fg-card { width: 100%; }
     }
   </style>
 </head>
