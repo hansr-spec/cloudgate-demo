@@ -108,42 +108,65 @@
       50% { height: 14px; opacity: 1; }
     }
 
-    /* Slide indicator tabs */
+    /* Slide indicator accordion */
     .slide-indicators {
       display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;
     }
     .slide-ind {
       flex: 1; min-width: 160px;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.05);
       border: 1.5px solid rgba(255,255,255,0.1);
-      border-radius: 14px; padding: 16px 20px;
-      cursor: pointer; transition: all 0.3s;
+      border-radius: 16px; padding: 18px 22px;
+      cursor: pointer; transition: background 0.3s, border-color 0.3s;
       position: relative; overflow: hidden;
     }
-    .slide-ind:hover { border-color: rgba(255,255,255,0.25); }
+    .slide-ind:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); }
     .slide-ind.active {
-      background: rgba(255,255,255,0.12);
-      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.11);
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    /* Header row: icon + title */
+    .slide-ind-header {
+      display: flex; align-items: center; gap: 10px;
     }
     .slide-ind-icon {
-      font-size: 20px; margin-bottom: 8px;
+      font-size: 20px; flex-shrink: 0;
     }
     .slide-ind-title {
-      font-size: 14px; font-weight: 700;
-      color: rgba(255,255,255,0.35);
-      transition: color 0.3s;
+      font-size: 15px; font-weight: 700;
+      color: rgba(255,255,255,0.3);
+      transition: color 0.3s; line-height: 1.3;
     }
     .slide-ind.active .slide-ind-title { color: white; }
-    .slide-ind-sub {
-      font-size: 12px; color: rgba(255,255,255,0.25);
-      margin-top: 3px; transition: color 0.3s;
+
+    /* Expandable body */
+    .slide-ind-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.3s ease;
+      opacity: 0;
     }
-    .slide-ind.active .slide-ind-sub { color: rgba(255,255,255,0.55); }
-    /* progress bar at bottom of indicator */
+    .slide-ind.active .slide-ind-body {
+      max-height: 200px; opacity: 1;
+    }
+    .slide-ind-desc {
+      font-size: 13px; color: rgba(255,255,255,0.55);
+      line-height: 1.75; margin-top: 12px; margin-bottom: 14px;
+    }
+    .slide-ind-chips {
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .ind-chip {
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.75); font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 6px;
+    }
+    .ind-chip.blue { background: rgba(91,163,255,0.2); border-color: rgba(91,163,255,0.4); color: #7eb3ff; }
+
+    /* progress bar at bottom */
     .slide-ind-prog {
       position: absolute; bottom: 0; left: 0;
-      height: 3px; background: rgba(255,255,255,0.15);
-      width: 100%;
+      height: 3px; background: rgba(255,255,255,0.1); width: 100%;
     }
     .slide-ind-prog-fill {
       height: 100%; background: #5ba3ff;
@@ -315,18 +338,36 @@
 <div class="slider-section">
   <div class="slider-inner">
 
-    <!-- Slide indicators -->
+    <!-- Slide indicators (accordion) -->
     <div class="slide-indicators">
       <div class="slide-ind active" id="ind-0" onclick="goSlide(0)">
-        <div class="slide-ind-icon">📋</div>
-        <div class="slide-ind-title">멀티 상담 동시 처리</div>
-        <div class="slide-ind-sub">여러 상담 건을 한 화면에서</div>
+        <div class="slide-ind-header">
+          <div class="slide-ind-icon">📋</div>
+          <div class="slide-ind-title">멀티 상담 동시 처리</div>
+        </div>
+        <div class="slide-ind-body">
+          <p class="slide-ind-desc">동시에 들어오는 복수의 상담 건을 하나의 화면에서 확인하고 처리합니다. 탭 전환 없이 상담 목록과 대화 내용을 함께 볼 수 있어 응대 속도가 빨라집니다.</p>
+          <div class="slide-ind-chips">
+            <span class="ind-chip blue">실시간 다중 상담</span>
+            <span class="ind-chip">상담 목록 한눈에</span>
+            <span class="ind-chip">미응답 알림</span>
+          </div>
+        </div>
         <div class="slide-ind-prog"><div class="slide-ind-prog-fill" id="ind-prog-0"></div></div>
       </div>
       <div class="slide-ind" id="ind-1" onclick="goSlide(1)">
-        <div class="slide-ind-icon">🛍️</div>
-        <div class="slide-ind-title">쇼핑몰 주문 정보 조회</div>
-        <div class="slide-ind-sub">cafe24 연동 즉시 확인</div>
+        <div class="slide-ind-header">
+          <div class="slide-ind-icon">🛍️</div>
+          <div class="slide-ind-title">쇼핑몰 주문 정보 즉시 조회</div>
+        </div>
+        <div class="slide-ind-body">
+          <p class="slide-ind-desc">cafe24 등 쇼핑몰 시스템과 연동하여 고객의 주문·배송 정보를 상담 화면 내에서 즉시 확인합니다. 별도 관리자 페이지 접속 없이 빠르게 답변할 수 있습니다.</p>
+          <div class="slide-ind-chips">
+            <span class="ind-chip blue">cafe24 연동</span>
+            <span class="ind-chip">주문 즉시 조회</span>
+            <span class="ind-chip">창 전환 불필요</span>
+          </div>
+        </div>
         <div class="slide-ind-prog"><div class="slide-ind-prog-fill" id="ind-prog-1"></div></div>
       </div>
     </div>
