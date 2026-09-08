@@ -79,27 +79,27 @@
 
     /* Demo Section */
     .demo-section {
-      background: #f0f4f8;
+      background: linear-gradient(135deg, #19153d 0%, #0a1a4a 100%);
       padding: 60px 40px 80px;
     }
-    .demo-inner { max-width: 1100px; margin: 0 auto; }
+    .demo-inner { max-width: 1200px; margin: 0 auto; }
 
     /* Top tab pills */
     .demo-tabs {
       display: flex; gap: 0; margin-bottom: 28px;
-      background: #e2e8f0; border-radius: 12px;
+      background: rgba(255,255,255,0.07); border-radius: 12px;
       padding: 4px; width: fit-content;
     }
     .demo-tab {
-      padding: 10px 24px; border-radius: 9px;
+      padding: 10px 28px; border-radius: 9px;
       border: none; background: transparent;
       font-family: inherit; font-size: 14px; font-weight: 700;
-      color: #94a3b8; cursor: pointer; transition: all 0.25s;
+      color: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.25s;
       white-space: nowrap;
     }
     .demo-tab.active {
-      background: var(--navy); color: white;
-      box-shadow: 0 2px 8px rgba(25,21,61,0.25);
+      background: white; color: var(--navy);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
 
     /* Slide card */
@@ -107,55 +107,55 @@
     .slide.active { display: block; }
 
     .demo-card {
-      background: #dce6f0;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 20px; overflow: hidden;
     }
     .demo-card-inner {
-      display: grid; grid-template-columns: 340px 1fr;
-      gap: 0; align-items: center;
+      display: grid; grid-template-columns: 320px 1fr;
+      gap: 0; align-items: stretch;
     }
 
     /* Left text panel */
     .demo-text {
       padding: 48px 40px;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      display: flex; flex-direction: column; justify-content: center;
     }
     .demo-card-title {
-      font-size: clamp(20px, 2vw, 26px); font-weight: 800;
-      color: var(--navy); letter-spacing: -0.5px;
-      line-height: 1.3; margin-bottom: 16px;
+      font-size: clamp(18px, 1.8vw, 24px); font-weight: 800;
+      color: white; letter-spacing: -0.5px;
+      line-height: 1.4; margin-bottom: 16px;
     }
     .demo-card-desc {
-      font-size: 14px; color: #475569;
-      line-height: 1.8; margin-bottom: 20px;
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      line-height: 1.85; margin-bottom: 24px;
     }
     .demo-key-points {
-      display: flex; flex-direction: column; gap: 0;
-      font-size: 13px; color: #64748b; font-weight: 600;
+      display: flex; flex-direction: column; gap: 6px;
+      font-size: 13px; color: rgba(255,255,255,0.55); font-weight: 600;
     }
-    .demo-key-points span { padding: 2px 0; }
-    .demo-key-points span::before { content: '· '; color: var(--blue); }
+    .demo-key-points span::before { content: '· '; color: #5ba3ff; }
 
     /* Right video panel */
     .demo-video-wrap {
       position: relative; overflow: hidden;
-      border-radius: 0 20px 0 0;
-      background: #c8d8e8;
+      background: #000;
     }
     .demo-video-wrap video {
       width: 100%; display: block;
-      max-height: 500px; object-fit: contain;
-      background: #1a2a3a;
+      max-height: 560px; object-fit: contain;
+      background: #000;
     }
 
     /* Bottom progress bar */
     .demo-prog-bar {
-      height: 4px; background: #c8d4e0;
-      border-radius: 0 0 20px 20px; overflow: hidden;
+      height: 3px; background: rgba(255,255,255,0.08);
+      overflow: hidden;
     }
     .demo-prog-fill {
-      height: 100%; background: var(--blue);
+      height: 100%; background: #5ba3ff;
       width: 0%; transition: width linear;
-      border-radius: 0 2px 2px 0;
     }
 
     /* Scroll arrow */
@@ -292,8 +292,8 @@
     <!-- 스크롤 유도 화살표 -->
     <div style="text-align:center; padding: 36px 0 0;">
       <button onclick="document.getElementById('feature-section').scrollIntoView({behavior:'smooth'})" style="
-        background: none; border: 2px solid rgba(25,21,61,0.2); border-radius: 50%;
-        width: 48px; height: 48px; cursor: pointer; color: var(--navy); font-size: 20px;
+        background: none; border: 2px solid rgba(255,255,255,0.25); border-radius: 50%;
+        width: 48px; height: 48px; cursor: pointer; color: white; font-size: 20px;
         display: inline-flex; align-items: center; justify-content: center;
         animation: bounceDown 1.8s ease-in-out infinite;
       " aria-label="기능 설명 보기">↓</button>
