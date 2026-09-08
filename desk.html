@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>통합 상담 데스크 · 클라우드게이트</title>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #0069ff;
+      --blue-dark: #0052cc;
+      --blue-light: #e5edff;
+      --navy: #19153d;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-500: #64748b;
+      --gray-700: #334155;
+      --white: #ffffff;
+      --radius: 16px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.10);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+      background: var(--navy);
+      color: var(--gray-700);
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .logo { display: flex; align-items: center; text-decoration: none; }
+    .back-btn {
+      display: flex; align-items: center; gap: 6px;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 14px; font-weight: 500;
+      padding: 8px 16px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.15);
+      transition: all 0.2s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+
+    /* Hero */
+    .hero {
+      padding-top: 64px;
+      background: linear-gradient(135deg, var(--navy) 0%, #0a1a4a 100%);
+      text-align: center;
+      padding-bottom: 72px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -100px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(0,105,255,0.15), transparent 70%);
+    }
+    .hero::after {
+      content: '';
+      position: absolute; bottom: -80px; left: -80px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(0,105,255,0.1), transparent 70%);
+    }
+    .hero-inner {
+      max-width: 860px; margin: 0 auto;
+      padding: 72px 40px 0;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(0,105,255,0.2); border: 1px solid rgba(0,105,255,0.4);
+      color: #7eb3ff; font-size: 12px; font-weight: 700;
+      padding: 5px 16px; border-radius: 100px;
+      letter-spacing: 0.8px; margin-bottom: 24px;
+    }
+    .hero-title {
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 800; color: white;
+      letter-spacing: -1.5px; line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero-title .hl {
+      background: linear-gradient(135deg, #5ba3ff, #00d4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 17px; color: rgba(255,255,255,0.55);
+      line-height: 1.75;
+    }
+
+    /* Demo Section */
+    .demo-section {
+      background: linear-gradient(135deg, #19153d 0%, #0a1a4a 100%);
+      padding: 0 40px 60px;
+    }
+    .demo-inner { max-width: 1100px; margin: 0 auto; }
+
+    .demo-block {
+      padding: 60px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .demo-block:last-child { border-bottom: none; }
+
+    .demo-block-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(0,105,255,0.2); border: 1px solid rgba(0,105,255,0.35);
+      color: #7eb3ff; font-size: 11px; font-weight: 700;
+      padding: 4px 14px; border-radius: 100px;
+      letter-spacing: 0.8px; margin-bottom: 16px;
+    }
+    .demo-block-title {
+      font-size: clamp(20px, 2.5vw, 30px);
+      font-weight: 800; color: white;
+      letter-spacing: -0.5px; line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .demo-block-desc {
+      font-size: 15px; color: rgba(255,255,255,0.5);
+      line-height: 1.75; margin-bottom: 32px;
+      max-width: 620px;
+    }
+
+    /* Video wrapper */
+    .video-wrap {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 16px 60px rgba(0,0,0,0.4);
+    }
+    .video-topbar {
+      background: rgba(255,255,255,0.06);
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .v-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .v-dot.r { background: #ff5f57; }
+    .v-dot.y { background: #febc2e; }
+    .v-dot.g { background: #28c840; }
+    .video-wrap video {
+      width: 100%; display: block;
+      max-height: 600px; object-fit: contain;
+      background: #000;
+    }
+
+    /* chips */
+    .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+    .chip {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.8);
+      font-size: 12px; font-weight: 600;
+      padding: 5px 14px; border-radius: 8px;
+    }
+    .chip.blue { background: rgba(0,105,255,0.2); border-color: rgba(0,105,255,0.4); color: #7eb3ff; }
+
+    /* Scroll arrow */
+    @keyframes bounceDown {
+      0%, 100% { transform: translateY(0); opacity: 0.7; }
+      50% { transform: translateY(8px); opacity: 1; }
+    }
+
+    /* Feature Grid */
+    .feature-section {
+      background: white;
+      padding: 80px 40px 100px;
+    }
+    .feature-section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label-dark {
+      display: inline-block;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--blue); background: var(--blue-light);
+      border: 1px solid rgba(0,105,255,0.2);
+      padding: 4px 14px; border-radius: 100px;
+      margin-bottom: 14px;
+    }
+    .section-title-dark {
+      font-size: clamp(26px, 3vw, 40px);
+      font-weight: 800; color: var(--navy);
+      letter-spacing: -0.8px; line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .section-desc-dark {
+      font-size: 15px; color: var(--gray-500);
+      line-height: 1.75; margin-bottom: 40px;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .f-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 16px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .f-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0,105,255,0.35);
+      box-shadow: 0 12px 40px rgba(0,105,255,0.15);
+    }
+    .f-screen {
+      width: 100%; aspect-ratio: 4/3;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .f-screen.s1 { background: linear-gradient(135deg, #0d2060 0%, #1a4080 100%); }
+    .f-screen.s2 { background: linear-gradient(135deg, #0a3050 0%, #1a5070 100%); }
+    .f-screen.s3 { background: linear-gradient(135deg, #1a3040 0%, #0d4060 100%); }
+    .f-screen img { width:100%; height:100%; object-fit:cover; object-position:top; display:block; }
+    .f-info { padding: 20px 22px; background: var(--navy); }
+    .f-num { font-size: 11px; font-weight: 700; color: var(--gray-500); margin-bottom: 6px; }
+    .f-name { font-size: 16px; font-weight: 700; color: white; margin-bottom: 6px; }
+    .f-detail { font-size: 13px; color: #c2c6cb; line-height: 1.6; }
+
+    /* Footer */
+    footer {
+      background: var(--navy); padding: 36px 40px; text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      header { padding: 0 20px; }
+      .hero-inner { padding: 60px 20px 0; }
+      .demo-section { padding: 0 20px 40px; }
+      .feature-section { padding: 60px 20px 80px; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">
+    <img src="cloudgate_bi_horizontal_txt_w.webp" alt="CloudGate" style="height:25px; display:block;">
+  </a>
+  <a href="index.html" class="back-btn">← 메인으로</a>
+</header>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🖥️ INTEGRATED DESK</div>
+    <h1 class="hero-title">
+      한 화면에서<br/>
+      <span class="hl">모든 상담을 처리하세요</span>
+    </h1>
+    <p class="hero-sub">
+      여러 상담 건을 동시에 확인하고, 주문 정보 조회부터 답변까지<br/>
+      창 전환 없이 하나의 화면에서 완결합니다.
+    </p>
+  </div>
+</div>
+
+<!-- Demo Section -->
+<div class="demo-section">
+  <div class="demo-inner">
+
+    <!-- Demo 1 -->
+    <div class="demo-block">
+      <div class="demo-block-label">📋 멀티 상담 관리</div>
+      <h2 class="demo-block-title">여러 상담 건을 한눈에</h2>
+      <p class="demo-block-desc">
+        동시에 들어오는 복수의 상담 건을 하나의 화면에서 확인하고 처리합니다.<br/>
+        탭 전환 없이 상담 목록과 대화 내용을 함께 볼 수 있어 응대 속도가 빨라집니다.
+      </p>
+      <div class="chip-row">
+        <span class="chip blue">실시간 다중 상담</span>
+        <span class="chip">상담 목록 한눈에</span>
+        <span class="chip">빠른 전환</span>
+        <span class="chip">미응답 알림</span>
+      </div>
+      <div class="video-wrap">
+        <div class="video-topbar">
+          <div class="v-dot r"></div>
+          <div class="v-dot y"></div>
+          <div class="v-dot g"></div>
+        </div>
+        <video src="videos/desk_multi.mov" controls muted playsinline preload="metadata"></video>
+      </div>
+    </div>
+
+    <!-- Demo 2 -->
+    <div class="demo-block">
+      <div class="demo-block-label">🛍️ 쇼핑몰 연동</div>
+      <h2 class="demo-block-title">주문 정보를 바로 조회</h2>
+      <p class="demo-block-desc">
+        cafe24 등 쇼핑몰 시스템과 연동하여 고객의 주문·배송 정보를 상담 화면 내에서 즉시 확인합니다.<br/>
+        별도 관리자 페이지 접속 없이 빠르게 답변할 수 있습니다.
+      </p>
+      <div class="chip-row">
+        <span class="chip blue">cafe24 연동</span>
+        <span class="chip">주문 정보 즉시 조회</span>
+        <span class="chip">배송 현황 확인</span>
+        <span class="chip">창 전환 불필요</span>
+      </div>
+      <div class="video-wrap">
+        <div class="video-topbar">
+          <div class="v-dot r"></div>
+          <div class="v-dot y"></div>
+          <div class="v-dot g"></div>
+        </div>
+        <video src="videos/cafe24_order.mov" controls muted playsinline preload="metadata"></video>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 스크롤 유도 화살표 -->
+  <div style="text-align:center; padding: 20px 0 8px;">
+    <button onclick="document.getElementById('feature-section').scrollIntoView({behavior:'smooth'})" style="
+      background: none; border: 2px solid rgba(255,255,255,0.25); border-radius: 50%;
+      width: 48px; height: 48px; cursor: pointer; color: white; font-size: 20px;
+      display: inline-flex; align-items: center; justify-content: center;
+      animation: bounceDown 1.8s ease-in-out infinite;
+      transition: border-color 0.2s, background 0.2s;
+    " onmouseover="this.style.borderColor='rgba(255,255,255,0.7)';this.style.background='rgba(255,255,255,0.1)'"
+       onmouseout="this.style.borderColor='rgba(255,255,255,0.25)';this.style.background='none'"
+       aria-label="기능 설명 보기">↓</button>
+  </div>
+</div>
+
+<!-- Feature Grid -->
+<div class="feature-section" id="feature-section">
+  <div class="feature-section-inner">
+    <div class="section-label-dark">Integrated Desk</div>
+    <h2 class="section-title-dark">통합 상담 데스크</h2>
+    <p class="section-desc-dark">
+      분산된 업무를 하나의 화면으로 통합.<br/>
+      상담사 생산성과 고객 만족도를 동시에 높입니다.
+    </p>
+    <div class="feature-grid">
+      <div class="f-card">
+        <div class="f-screen s1">
+          <img src="" alt="멀티 상담 관리">
+        </div>
+        <div class="f-info">
+          <div class="f-num">01</div>
+          <div class="f-name">멀티 상담 동시 처리</div>
+          <p class="f-detail">여러 고객 상담을 한 화면에서 동시에 확인하고 처리합니다. 미응답 알림으로 놓치는 상담이 없습니다.</p>
+        </div>
+      </div>
+      <div class="f-card">
+        <div class="f-screen s2">
+          <img src="" alt="쇼핑몰 연동">
+        </div>
+        <div class="f-info">
+          <div class="f-num">02</div>
+          <div class="f-name">쇼핑몰 시스템 연동</div>
+          <p class="f-detail">cafe24 등 주요 쇼핑몰과 연동해 주문·배송 정보를 상담 화면에서 바로 조회합니다.</p>
+        </div>
+      </div>
+      <div class="f-card">
+        <div class="f-screen s3">
+          <img src="" alt="상담 효율화">
+        </div>
+        <div class="f-info">
+          <div class="f-num">03</div>
+          <div class="f-name">상담 효율 극대화</div>
+          <p class="f-detail">창 전환 없이 모든 업무를 한 화면에서 처리해 상담사 1인당 처리 건수를 획기적으로 늘립니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <img src="https://thewc.co.kr/wp-content/uploads/2023/12/twc_logo.png" alt="TWC" style="height:28px; display:block; margin:0 auto 8px;">
+  <p style="font-size:13px; color:rgba(255,255,255,0.35);">더화이트커뮤니케이션(주) · AI 고객상담 채팅&amp;콜 통합 솔루션</p>
+</footer>
+
+</body>
+</html>
