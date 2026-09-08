@@ -47,7 +47,7 @@
     .hero {
       padding-top: 64px;
       background: linear-gradient(135deg, var(--navy) 0%, #0a1a4a 100%);
-      text-align: center; padding-bottom: 60px;
+      text-align: center; padding-bottom: 80px;
       position: relative; overflow: hidden;
     }
     .hero::before {
@@ -77,92 +77,83 @@
     }
     .hero-sub { font-size: 17px; color: rgba(255,255,255,0.55); line-height: 1.75; }
 
-    /* Slider Section */
-    .slider-section {
-      background: linear-gradient(135deg, #19153d 0%, #0a1a4a 100%);
-      padding: 60px 40px;
+    /* Accordion Demo Section */
+    .demo-section {
+      background: white;
+      padding: 80px 40px 100px;
     }
-    .slider-inner { max-width: 1100px; margin: 0 auto; }
-
-    /* Tab buttons */
-    .slide-tabs {
-      display: flex; justify-content: center; gap: 8px;
-      margin-bottom: 32px; flex-wrap: wrap;
-    }
-    .slide-tab {
-      padding: 10px 28px; border-radius: 100px;
-      border: 1.5px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.06);
-      font-family: inherit; font-size: 14px; font-weight: 700;
-      color: rgba(255,255,255,0.6); cursor: pointer; transition: all 0.25s;
-    }
-    .slide-tab:hover { border-color: rgba(255,255,255,0.5); color: white; }
-    .slide-tab.active {
-      background: white; border-color: white;
-      color: var(--navy); box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    .demo-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
     }
 
-    /* Slide card wrap */
-    .slide-wrap { position: relative; }
-    .slide-arrow {
-      position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
-      width: 44px; height: 44px; border-radius: 50%;
-      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
-      color: white; font-size: 20px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all 0.2s; user-select: none;
-      backdrop-filter: blur(8px);
+    /* Left: accordion list */
+    .acc-list { display: flex; flex-direction: column; gap: 0; }
+    .acc-item {
+      border-bottom: 1px solid var(--gray-200);
+      cursor: pointer; padding: 28px 0;
+      transition: all 0.2s;
     }
-    .slide-arrow:hover { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); }
-    .slide-arrow.prev { left: -60px; }
-    .slide-arrow.next { right: -60px; }
-
-    /* Individual slide */
-    .slide { display: none; }
-    .slide.active { display: block; }
-
-    /* Info row above video */
-    .slide-info {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      gap: 20px; margin-bottom: 24px; flex-wrap: wrap;
+    .acc-item:first-child { border-top: 1px solid var(--gray-200); }
+    .acc-header {
+      display: flex; align-items: center; gap: 12px;
     }
-    .slide-info-left {}
-    .slide-label {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(0,105,255,0.2); border: 1px solid rgba(0,105,255,0.35);
-      color: #7eb3ff; font-size: 11px; font-weight: 700;
-      padding: 4px 14px; border-radius: 100px;
-      letter-spacing: 0.8px; margin-bottom: 12px;
+    .acc-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--gray-100); display: flex; align-items: center;
+      justify-content: center; font-size: 18px; flex-shrink: 0;
+      transition: background 0.2s;
     }
-    .slide-title {
-      font-size: clamp(20px, 2.5vw, 28px);
-      font-weight: 800; color: white;
-      letter-spacing: -0.5px; line-height: 1.25; margin-bottom: 8px;
+    .acc-item.active .acc-icon { background: var(--blue); }
+    .acc-title {
+      font-size: 18px; font-weight: 700; color: var(--gray-500);
+      letter-spacing: -0.3px; line-height: 1.3;
+      transition: color 0.2s;
     }
-    .slide-desc {
-      font-size: 14px; color: rgba(255,255,255,0.5);
-      line-height: 1.75; max-width: 560px;
+    .acc-item.active .acc-title { color: var(--navy); }
+    .acc-body {
+      display: none; padding-top: 16px; padding-left: 48px;
     }
-    .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .acc-item.active .acc-body { display: block; }
+    .acc-desc {
+      font-size: 14px; color: var(--gray-500); line-height: 1.8; margin-bottom: 14px;
+    }
+    .chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
     .chip {
-      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-      color: rgba(255,255,255,0.8); font-size: 12px; font-weight: 600;
+      background: var(--gray-100); border: 1px solid var(--gray-200);
+      color: var(--gray-700); font-size: 12px; font-weight: 600;
       padding: 4px 12px; border-radius: 8px;
     }
-    .chip.blue { background: rgba(0,105,255,0.2); border-color: rgba(0,105,255,0.4); color: #7eb3ff; }
+    .chip.blue { background: var(--blue-light); border-color: rgba(0,105,255,0.25); color: var(--blue); }
 
-    /* Video box */
+    /* Progress bar under active item */
+    .acc-progress {
+      height: 2px; background: var(--gray-200); border-radius: 2px;
+      margin-top: 20px; margin-left: 48px; overflow: hidden;
+      display: none;
+    }
+    .acc-item.active .acc-progress { display: block; }
+    .acc-progress-fill {
+      height: 100%; background: var(--blue);
+      width: 0%; border-radius: 2px;
+      transition: width linear;
+    }
+
+    /* Right: video */
+    .acc-video-wrap {
+      position: relative;
+    }
     .video-box {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
       border-radius: 20px; overflow: hidden;
-      box-shadow: 0 16px 60px rgba(0,0,0,0.4);
+      box-shadow: 0 16px 60px rgba(0,0,0,0.12);
     }
     .video-topbar {
-      background: rgba(255,255,255,0.06);
+      background: var(--gray-100);
       padding: 12px 20px;
       display: flex; align-items: center; gap: 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
+      border-bottom: 1px solid var(--gray-200);
     }
     .v-dot { width: 10px; height: 10px; border-radius: 50%; }
     .v-dot.r { background: #ff5f57; }
@@ -170,19 +161,8 @@
     .v-dot.g { background: #28c840; }
     .video-box video {
       width: 100%; display: block;
-      max-height: 620px; object-fit: contain; background: #000;
+      max-height: 500px; object-fit: contain; background: #000;
     }
-
-    /* Progress dots */
-    .slide-dots {
-      display: flex; justify-content: center; gap: 8px; margin-top: 24px;
-    }
-    .dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: rgba(255,255,255,0.25); cursor: pointer;
-      transition: all 0.3s;
-    }
-    .dot.active { background: white; width: 24px; border-radius: 4px; }
 
     /* Scroll arrow */
     @keyframes bounceDown {
@@ -230,9 +210,9 @@
     @media (max-width: 900px) {
       header { padding: 0 20px; }
       .hero-inner { padding: 60px 20px 0; }
-      .slider-section { padding: 40px 20px; }
-      .slide-arrow.prev { left: -8px; }
-      .slide-arrow.next { right: -8px; }
+      .demo-section { padding: 60px 20px 80px; }
+      .demo-inner { grid-template-columns: 1fr; gap: 40px; }
+      .acc-video-wrap { order: -1; }
       .feature-section { padding: 60px 20px 80px; }
       .feature-grid { grid-template-columns: 1fr; }
     }
@@ -262,86 +242,57 @@
   </div>
 </div>
 
-<!-- Slider Demo Section -->
-<div class="slider-section">
-  <div class="slider-inner">
+<!-- Accordion Demo Section -->
+<div class="demo-section">
+  <div class="demo-inner">
 
-    <!-- Tab buttons -->
-    <div class="slide-tabs">
-      <button class="slide-tab active" onclick="goSlide(0)">📋 멀티 상담 관리</button>
-      <button class="slide-tab" onclick="goSlide(1)">🛍️ 쇼핑몰 연동</button>
-    </div>
-
-    <!-- Slides -->
-    <div class="slide-wrap">
-      <button class="slide-arrow prev" onclick="moveSlide(-1)">&#8249;</button>
-      <button class="slide-arrow next" onclick="moveSlide(1)">&#8250;</button>
-
-      <!-- Slide 0 -->
-      <div class="slide active" id="slide-0">
-        <div class="slide-info">
-          <div class="slide-info-left">
-            <div class="slide-label">📋 멀티 상담 관리</div>
-            <div class="slide-title">여러 상담 건을 한눈에</div>
-            <p class="slide-desc">동시에 들어오는 복수의 상담 건을 하나의 화면에서 확인하고 처리합니다.<br/>탭 전환 없이 상담 목록과 대화 내용을 함께 볼 수 있어 응대 속도가 빨라집니다.</p>
-            <div class="chip-row">
-              <span class="chip blue">실시간 다중 상담</span>
-              <span class="chip">상담 목록 한눈에</span>
-              <span class="chip">빠른 전환</span>
-              <span class="chip">미응답 알림</span>
-            </div>
+    <!-- Left: accordion -->
+    <div class="acc-list">
+      <!-- Item 0 -->
+      <div class="acc-item active" id="acc-0" onclick="goAcc(0)">
+        <div class="acc-header">
+          <div class="acc-icon">📋</div>
+          <div class="acc-title">멀티 상담 동시 처리</div>
+        </div>
+        <div class="acc-body">
+          <p class="acc-desc">동시에 들어오는 복수의 상담 건을 하나의 화면에서 확인하고 처리합니다. 탭 전환 없이 상담 목록과 대화 내용을 함께 볼 수 있어 응대 속도가 빨라집니다.</p>
+          <div class="chip-row">
+            <span class="chip blue">실시간 다중 상담</span>
+            <span class="chip">상담 목록 한눈에</span>
+            <span class="chip">빠른 전환</span>
+            <span class="chip">미응답 알림</span>
           </div>
         </div>
-        <div class="video-box">
-          <div class="video-topbar">
-            <div class="v-dot r"></div><div class="v-dot y"></div><div class="v-dot g"></div>
-          </div>
-          <video id="video-0" src="videos/desk_multi.mov" muted playsinline preload="metadata"></video>
-        </div>
+        <div class="acc-progress"><div class="acc-progress-fill" id="prog-0"></div></div>
       </div>
 
-      <!-- Slide 1 -->
-      <div class="slide" id="slide-1">
-        <div class="slide-info">
-          <div class="slide-info-left">
-            <div class="slide-label">🛍️ 쇼핑몰 연동</div>
-            <div class="slide-title">주문 정보를 바로 조회</div>
-            <p class="slide-desc">cafe24 등 쇼핑몰 시스템과 연동하여 고객의 주문·배송 정보를 상담 화면 내에서 즉시 확인합니다.<br/>별도 관리자 페이지 접속 없이 빠르게 답변할 수 있습니다.</p>
-            <div class="chip-row">
-              <span class="chip blue">cafe24 연동</span>
-              <span class="chip">주문 정보 즉시 조회</span>
-              <span class="chip">배송 현황 확인</span>
-              <span class="chip">창 전환 불필요</span>
-            </div>
+      <!-- Item 1 -->
+      <div class="acc-item" id="acc-1" onclick="goAcc(1)">
+        <div class="acc-header">
+          <div class="acc-icon">🛍️</div>
+          <div class="acc-title">쇼핑몰 주문 정보 즉시 조회</div>
+        </div>
+        <div class="acc-body">
+          <p class="acc-desc">cafe24 등 쇼핑몰 시스템과 연동하여 고객의 주문·배송 정보를 상담 화면 내에서 즉시 확인합니다. 별도 관리자 페이지 접속 없이 빠르게 답변할 수 있습니다.</p>
+          <div class="chip-row">
+            <span class="chip blue">cafe24 연동</span>
+            <span class="chip">주문 정보 즉시 조회</span>
+            <span class="chip">배송 현황 확인</span>
+            <span class="chip">창 전환 불필요</span>
           </div>
         </div>
-        <div class="video-box">
-          <div class="video-topbar">
-            <div class="v-dot r"></div><div class="v-dot y"></div><div class="v-dot g"></div>
-          </div>
-          <video id="video-1" src="videos/cafe24_order.mov" muted playsinline preload="metadata"></video>
-        </div>
+        <div class="acc-progress"><div class="acc-progress-fill" id="prog-1"></div></div>
       </div>
-
     </div>
 
-    <!-- Dots -->
-    <div class="slide-dots">
-      <div class="dot active" onclick="goSlide(0)"></div>
-      <div class="dot" onclick="goSlide(1)"></div>
-    </div>
-
-    <!-- 스크롤 유도 화살표 -->
-    <div style="text-align:center; padding: 36px 0 0;">
-      <button onclick="document.getElementById('feature-section').scrollIntoView({behavior:'smooth'})" style="
-        background: none; border: 2px solid rgba(255,255,255,0.25); border-radius: 50%;
-        width: 48px; height: 48px; cursor: pointer; color: white; font-size: 20px;
-        display: inline-flex; align-items: center; justify-content: center;
-        animation: bounceDown 1.8s ease-in-out infinite;
-        transition: border-color 0.2s, background 0.2s;
-      " onmouseover="this.style.borderColor='rgba(255,255,255,0.7)';this.style.background='rgba(255,255,255,0.1)'"
-         onmouseout="this.style.borderColor='rgba(255,255,255,0.25)';this.style.background='none'"
-         aria-label="기능 설명 보기">↓</button>
+    <!-- Right: video -->
+    <div class="acc-video-wrap">
+      <div class="video-box">
+        <div class="video-topbar">
+          <div class="v-dot r"></div><div class="v-dot y"></div><div class="v-dot g"></div>
+        </div>
+        <video id="acc-video" src="videos/desk_multi.mov" muted playsinline preload="metadata" style="width:100%;display:block;max-height:500px;object-fit:contain;background:#000;"></video>
+      </div>
     </div>
 
   </div>
@@ -391,53 +342,60 @@
 </footer>
 
 <script>
-  const total = 2;
+  const videos = ['videos/desk_multi.mov', 'videos/cafe24_order.mov'];
+  const total = videos.length;
   let current = 0;
-  let timer = null;
+  let autoTimer = null;
+  let progTimer = null;
+  const DURATION = 12000; // fallback auto-advance ms
 
-  function goSlide(idx) {
-    // pause current video
-    const prevVideo = document.getElementById('video-' + current);
-    if (prevVideo) { prevVideo.pause(); prevVideo.currentTime = 0; }
-
-    document.getElementById('slide-' + current).classList.remove('active');
-    document.querySelectorAll('.slide-tab')[current].classList.remove('active');
-    document.querySelectorAll('.dot')[current].classList.remove('active');
+  function goAcc(idx) {
+    // deactivate current
+    document.getElementById('acc-' + current).classList.remove('active');
+    clearProg(current);
 
     current = idx;
+    document.getElementById('acc-' + current).classList.add('active');
 
-    document.getElementById('slide-' + current).classList.add('active');
-    document.querySelectorAll('.slide-tab')[current].classList.add('active');
-    document.querySelectorAll('.dot')[current].classList.add('active');
+    // update video
+    const vid = document.getElementById('acc-video');
+    vid.src = videos[current];
+    vid.currentTime = 0;
+    vid.play();
+    vid.onended = () => goAcc((current + 1) % total);
 
-    // play new video and auto-advance when ended
-    const newVideo = document.getElementById('video-' + current);
-    if (newVideo) {
-      newVideo.play();
-      newVideo.onended = () => goSlide((current + 1) % total);
-    }
-
-    resetTimer();
+    startProg(current, DURATION);
+    resetAutoTimer();
   }
 
-  function moveSlide(dir) {
-    goSlide((current + dir + total) % total);
+  function startProg(idx, duration) {
+    clearProg(idx);
+    const fill = document.getElementById('prog-' + idx);
+    if (!fill) return;
+    fill.style.transition = 'none';
+    fill.style.width = '0%';
+    requestAnimationFrame(() => {
+      fill.style.transition = 'width ' + (duration / 1000) + 's linear';
+      fill.style.width = '100%';
+    });
   }
 
-  function resetTimer() {
-    if (timer) clearTimeout(timer);
-    // fallback: if video doesn't fire onended, advance after 15s
-    timer = setTimeout(() => goSlide((current + 1) % total), 15000);
+  function clearProg(idx) {
+    const fill = document.getElementById('prog-' + idx);
+    if (fill) { fill.style.transition = 'none'; fill.style.width = '0%'; }
   }
 
-  // Start first video on load
+  function resetAutoTimer() {
+    if (autoTimer) clearTimeout(autoTimer);
+    autoTimer = setTimeout(() => goAcc((current + 1) % total), DURATION);
+  }
+
   window.addEventListener('load', () => {
-    const v = document.getElementById('video-0');
-    if (v) {
-      v.play();
-      v.onended = () => goSlide(1);
-    }
-    resetTimer();
+    const vid = document.getElementById('acc-video');
+    vid.play();
+    vid.onended = () => goAcc(1);
+    startProg(0, DURATION);
+    resetAutoTimer();
   });
 </script>
 
