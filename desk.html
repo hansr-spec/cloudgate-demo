@@ -305,7 +305,7 @@
             </div>
           </div>
           <div class="demo-video-wrap">
-            <video id="video-3" src="videos/ai_summary.mp4" muted playsinline preload="metadata"></video>
+            <video id="video-3" muted playsinline preload="metadata"></video>
           </div>
         </div>
         <div class="demo-prog-bar"><div class="demo-prog-fill" id="prog-3"></div></div>
@@ -336,6 +336,31 @@
   let autoTimer = null;
   const FALLBACK = 15000;
 
+  // 슬라이드 3 플레이리스트
+  const playlist3 = [
+    'https://thewc.co.kr/cloudgate/wp-content/uploads/sites/6/2025/07/ai_cg_media_01.mp4',
+    'https://thewc.co.kr/cloudgate/wp-content/uploads/sites/6/2025/07/ai_cg_media_03.mp4',
+    'https://thewc.co.kr/cloudgate/wp-content/uploads/sites/6/2025/07/ai_cg_media_02.mp4'
+  ];
+  let playlistIdx = 0;
+
+  function playPlaylist(vid, startIdx) {
+    playlistIdx = startIdx || 0;
+    vid.src = playlist3[playlistIdx];
+    vid.load();
+    vid.play();
+    vid.onended = () => {
+      playlistIdx++;
+      if (playlistIdx < playlist3.length) {
+        vid.src = playlist3[playlistIdx];
+        vid.load();
+        vid.play();
+      } else {
+        goSlide((current + 1) % total);
+      }
+    };
+  }
+
   function startProg(idx, ms) {
     const fill = document.getElementById('prog-' + idx);
     if (!fill) return;
@@ -354,7 +379,7 @@
 
   function goSlide(idx) {
     const prev = document.getElementById('video-' + current);
-    if (prev) { prev.pause(); prev.currentTime = 0; }
+    if (prev) { prev.pause(); prev.currentTime = 0; prev.onended = null; }
     document.getElementById('slide-' + current).classList.remove('active');
     document.getElementById('tab-' + current).classList.remove('active');
     clearProg(current);
@@ -364,7 +389,10 @@
     document.getElementById('tab-' + current).classList.add('active');
 
     const vid = document.getElementById('video-' + current);
-    if (vid) {
+    if (current === 3) {
+      playPlaylist(vid, 0);
+      startProg(3, FALLBACK * playlist3.length);
+    } else if (vid) {
       vid.play();
       vid.onended = () => goSlide((current + 1) % total);
       const dur = vid.duration && isFinite(vid.duration) ? vid.duration * 1000 : FALLBACK;
@@ -372,7 +400,7 @@
     }
 
     if (autoTimer) clearTimeout(autoTimer);
-    autoTimer = setTimeout(() => goSlide((current + 1) % total), FALLBACK);
+    autoTimer = setTimeout(() => goSlide((current + 1) % total), FALLBACK * (current === 3 ? playlist3.length : 1));
   }
 
   window.addEventListener('load', () => {
