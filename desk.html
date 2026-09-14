@@ -173,14 +173,10 @@
       transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     }
     .fg-card:hover { transform: translateY(-4px); border-color: rgba(91,163,255,0.7); box-shadow: 0 12px 40px rgba(0,105,255,0.25); }
-    .fg-screen { width: 100%; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .fg-screen { width: 100%; aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .fg-screen.s1 { background: linear-gradient(135deg, #0d2060 0%, #1a4080 100%); }
     .fg-screen.s2 { background: linear-gradient(135deg, #0a3050 0%, #1a5070 100%); }
     .fg-screen.s3 { background: linear-gradient(135deg, #1a3040 0%, #0d4060 100%); }
-    .fg-info { padding: 20px 22px; background: #19153d; }
-    .fg-num { font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px; }
-    .fg-name { font-size: 16px; font-weight: 700; color: white; margin-bottom: 6px; }
-    .fg-detail { font-size: 13px; color: #c2c6cb; line-height: 1.6; }
 
     footer { background: var(--navy); padding: 36px 40px; text-align: center; }
 
@@ -316,27 +312,12 @@
     <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:24px;">
       <div class="fg-card">
         <div class="fg-screen s1"><img src="img8.png" alt="콜 & 톡 AI 상담요약" style="width:100%; height:100%; object-fit:cover; object-position:top; display:block;"></div>
-        <div class="fg-info">
-          <div class="fg-num">01</div>
-          <div class="fg-name">콜 &amp; 톡 AI 상담요약</div>
-          <p class="fg-detail">고객과 상담사 간의 콜 &amp; 톡 상담 내용을 자동으로 요약하고 분석합니다.</p>
-        </div>
       </div>
       <div class="fg-card">
         <div class="fg-screen s2"><img src="img9.png" alt="AI 콜 STT 서비스" style="width:100%; height:100%; object-fit:cover; object-position:top; display:block;"></div>
-        <div class="fg-info">
-          <div class="fg-num">02</div>
-          <div class="fg-name">AI 콜 STT 서비스</div>
-          <p class="fg-detail">콜 센터에서 발생하는 고객과 상담사 간의 음성 대화를 실시간으로 인식하여 텍스트로 변환합니다.</p>
-        </div>
       </div>
       <div class="fg-card">
         <div class="fg-screen s3"><img src="img10.png" alt="AI FAQ 추천 답변 생성" style="width:100%; height:100%; object-fit:cover; object-position:top; display:block;"></div>
-        <div class="fg-info">
-          <div class="fg-num">03</div>
-          <div class="fg-name">AI FAQ 추천 답변 생성</div>
-          <p class="fg-detail">고객들의 자주하는 질문 유형을 학습해 상담사가 상담 시 필요한 정보를 제공합니다.</p>
-        </div>
       </div>
     </div>
   </div>
