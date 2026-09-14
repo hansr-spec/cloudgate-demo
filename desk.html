@@ -145,9 +145,24 @@
     .demo-video-wrap video {
       width: 100%; display: block;
       height: 700px; object-fit: cover;
-      object-position: top;
+      object-position: 50% 0%;
       background: #000;
     }
+    #video-0 { object-position: 50% 0%; }
+    #video-1 { object-position: 50% 0%; }
+    #video-2 { object-position: 50% 0%; }
+    #video-3 { object-position: 50% 0%; }
+
+    /* 위치 조절 도구 (?edit 모드) */
+    #pos-editor {
+      position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+      background: rgba(0,0,0,0.85); color: white; border-radius: 12px;
+      padding: 16px 20px; font-size: 13px; font-family: monospace;
+      display: none; min-width: 240px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    #pos-editor label { display: block; margin-bottom: 6px; color: #aaa; }
+    #pos-editor input[type=range] { width: 100%; margin-bottom: 12px; }
+    #pos-editor .pos-val { color: #5ba3ff; font-weight: bold; margin-bottom: 12px; }
 
     /* Bottom progress bar */
     .demo-prog-bar {
@@ -325,6 +340,17 @@
   </div>
 </div>
 
+<!-- 위치 조절 도구 (?edit 모드에서만 표시) -->
+<div id="pos-editor">
+  <div style="font-weight:700; margin-bottom:10px; color:white;">📐 영상 위치 조절 (슬라이드 <span id="pe-slide">0</span>)</div>
+  <label>좌우 (X): <span id="pe-x-val">50%</span></label>
+  <input type="range" id="pe-x" min="0" max="100" value="50">
+  <label>상하 (Y): <span id="pe-y-val">0%</span></label>
+  <input type="range" id="pe-y" min="0" max="100" value="0">
+  <div class="pos-val" id="pe-output">object-position: 50% 0%</div>
+  <div style="color:#888; font-size:11px;">값 확인 후 저한테 알려주세요</div>
+</div>
+
 <footer>
   <img src="https://thewc.co.kr/wp-content/uploads/2023/12/twc_logo.png" alt="TWC" style="height:28px; display:block; margin:0 auto 8px;">
   <p style="font-size:13px; color:rgba(255,255,255,0.35);">더화이트커뮤니케이션(주) · AI 고객상담 채팅&amp;콜 통합 솔루션</p>
@@ -401,6 +427,44 @@
 
     if (autoTimer) clearTimeout(autoTimer);
     autoTimer = setTimeout(() => goSlide((current + 1) % total), FALLBACK * (current === 3 ? playlist3.length : 1));
+  }
+
+  // ?edit 모드: 영상 위치 조절 도구
+  if (location.search.includes('edit')) {
+    const editor = document.getElementById('pos-editor');
+    editor.style.display = 'block';
+    const slideLabel = document.getElementById('pe-slide');
+    const xSlider = document.getElementById('pe-x');
+    const ySlider = document.getElementById('pe-y');
+    const xVal = document.getElementById('pe-x-val');
+    const yVal = document.getElementById('pe-y-val');
+    const output = document.getElementById('pe-output');
+
+    function updatePos() {
+      const x = xSlider.value + '%';
+      const y = ySlider.value + '%';
+      xVal.textContent = x; yVal.textContent = y;
+      output.textContent = 'object-position: ' + x + ' ' + y;
+      const vid = document.getElementById('video-' + current);
+      if (vid) vid.style.objectPosition = x + ' ' + y;
+    }
+    xSlider.addEventListener('input', updatePos);
+    ySlider.addEventListener('input', updatePos);
+
+    const origGoSlide = goSlide;
+    // 슬라이드 바뀔 때 라벨 업데이트
+    const _observe = setInterval(() => {
+      slideLabel.textContent = current;
+      const vid = document.getElementById('video-' + current);
+      if (vid) {
+        const pos = (vid.style.objectPosition || '50% 0%').split(' ');
+        xSlider.value = parseInt(pos[0]) || 50;
+        ySlider.value = parseInt(pos[1]) || 0;
+        xVal.textContent = xSlider.value + '%';
+        yVal.textContent = ySlider.value + '%';
+        output.textContent = 'object-position: ' + xSlider.value + '% ' + ySlider.value + '%';
+      }
+    }, 500);
   }
 
   window.addEventListener('load', () => {
