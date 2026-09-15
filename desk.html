@@ -417,18 +417,31 @@
     document.getElementById('tab-' + current).classList.add('active');
 
     const vid = document.getElementById('video-' + current);
+    if (autoTimer) clearTimeout(autoTimer);
+
     if (current === 3) {
       playPlaylist(vid, 0);
       startProg(3, FALLBACK * playlist3.length);
     } else if (vid) {
       vid.play();
       vid.onended = () => goSlide((current + 1) % total);
-      const dur = vid.duration && isFinite(vid.duration) ? vid.duration * 1000 : FALLBACK;
-      startProg(current, dur);
-    }
 
-    if (autoTimer) clearTimeout(autoTimer);
-    autoTimer = setTimeout(() => goSlide((current + 1) % total), FALLBACK * (current === 3 ? playlist3.length : 1));
+      const applyDur = () => {
+        const dur = vid.duration && isFinite(vid.duration) ? vid.duration * 1000 : FALLBACK;
+        clearProg(current);
+        startProg(current, dur);
+        if (autoTimer) clearTimeout(autoTimer);
+        autoTimer = setTimeout(() => goSlide((current + 1) % total), dur + 500);
+      };
+
+      if (vid.duration && isFinite(vid.duration)) {
+        applyDur();
+      } else {
+        startProg(current, FALLBACK);
+        autoTimer = setTimeout(() => goSlide((current + 1) % total), FALLBACK);
+        vid.addEventListener('loadedmetadata', applyDur, { once: true });
+      }
+    }
   }
 
   // ?edit 모드: 영상 위치 조절 도구
@@ -474,13 +487,23 @@
     if (v) {
       v.play();
       v.onended = () => goSlide(1);
-      v.addEventListener('loadedmetadata', () => {
+
+      const applyDur0 = () => {
         const dur = v.duration && isFinite(v.duration) ? v.duration * 1000 : FALLBACK;
+        clearProg(0);
         startProg(0, dur);
-      });
+        if (autoTimer) clearTimeout(autoTimer);
+        autoTimer = setTimeout(() => goSlide(1), dur + 500);
+      };
+
+      if (v.duration && isFinite(v.duration)) {
+        applyDur0();
+      } else {
+        startProg(0, FALLBACK);
+        autoTimer = setTimeout(() => goSlide(1), FALLBACK);
+        v.addEventListener('loadedmetadata', applyDur0, { once: true });
+      }
     }
-    startProg(0, FALLBACK);
-    autoTimer = setTimeout(() => goSlide(1), FALLBACK);
   });
 </script>
 
