@@ -257,7 +257,7 @@
             </div>
           </div>
           <div class="demo-video-wrap">
-            <video id="video-0" src="videos/desk_multi.mov" muted playsinline preload="metadata"></video>
+            <video id="video-0" muted playsinline preload="metadata"></video>
           </div>
         </div>
         <div class="demo-prog-bar"><div class="demo-prog-fill" id="prog-0"></div></div>
@@ -320,7 +320,7 @@
             </div>
           </div>
           <div class="demo-video-wrap">
-            <video id="video-3" muted playsinline preload="metadata"></video>
+            <video id="video-3" src="videos/desk_multi.mov" muted playsinline preload="metadata"></video>
           </div>
         </div>
         <div class="demo-prog-bar"><div class="demo-prog-fill" id="prog-3"></div></div>
@@ -419,9 +419,9 @@
     const vid = document.getElementById('video-' + current);
     if (autoTimer) clearTimeout(autoTimer);
 
-    if (current === 3) {
+    if (current === 0) {
       playPlaylist(vid, 0);
-      startProg(3, FALLBACK * playlist3.length);
+      startProg(0, FALLBACK * playlist3.length);
     } else if (vid) {
       vid.play();
       vid.onended = () => goSlide((current + 1) % total);
@@ -485,24 +485,9 @@
   window.addEventListener('load', () => {
     const v = document.getElementById('video-0');
     if (v) {
-      v.play();
-      v.onended = () => goSlide(1);
-
-      const applyDur0 = () => {
-        const dur = v.duration && isFinite(v.duration) ? v.duration * 1000 : FALLBACK;
-        clearProg(0);
-        startProg(0, dur);
-        if (autoTimer) clearTimeout(autoTimer);
-        autoTimer = setTimeout(() => goSlide(1), dur + 500);
-      };
-
-      if (v.duration && isFinite(v.duration)) {
-        applyDur0();
-      } else {
-        startProg(0, FALLBACK);
-        autoTimer = setTimeout(() => goSlide(1), FALLBACK);
-        v.addEventListener('loadedmetadata', applyDur0, { once: true });
-      }
+      playPlaylist(v, 0);
+      startProg(0, FALLBACK * playlist3.length);
+      autoTimer = setTimeout(() => goSlide(1), FALLBACK * playlist3.length);
     }
   });
 </script>
