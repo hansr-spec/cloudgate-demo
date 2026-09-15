@@ -362,23 +362,25 @@
   let autoTimer = null;
   const FALLBACK = 15000;
 
-  // 슬라이드 3 플레이리스트
+  // 슬라이드 3 플레이리스트 (url, object-position)
   const playlist3 = [
-    'https://thewc.co.kr/cloudgate/wp-content/uploads/sites/6/2025/07/ai_cg_media_01.mp4',
-    'https://thewc.co.kr/cloudgate/wp-content/uploads/sites/6/2025/07/ai_cg_media_03.mp4',
-    'https://thewc.co.kr/cloudgate/wp-content/uploads/sites/6/2025/07/ai_cg_media_02.mp4'
+    { src: 'https://thewc.co.kr/cloudgate/wp-content/uploads/sites/6/2025/07/ai_cg_media_01.mp4', pos: '0% 0%' },
+    { src: 'https://thewc.co.kr/cloudgate/wp-content/uploads/sites/6/2025/07/ai_cg_media_03.mp4', pos: '50% 0%' },
+    { src: 'https://thewc.co.kr/cloudgate/wp-content/uploads/sites/6/2025/07/ai_cg_media_02.mp4', pos: '50% 0%' }
   ];
   let playlistIdx = 0;
 
   function playPlaylist(vid, startIdx) {
     playlistIdx = startIdx || 0;
-    vid.src = playlist3[playlistIdx];
+    vid.src = playlist3[playlistIdx].src;
+    vid.style.objectPosition = playlist3[playlistIdx].pos;
     vid.load();
     vid.play();
     vid.onended = () => {
       playlistIdx++;
       if (playlistIdx < playlist3.length) {
-        vid.src = playlist3[playlistIdx];
+        vid.src = playlist3[playlistIdx].src;
+        vid.style.objectPosition = playlist3[playlistIdx].pos;
         vid.load();
         vid.play();
       } else {
