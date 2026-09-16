@@ -354,6 +354,9 @@
   <label>화면 너비 (max-width): <span id="pe-w-val">1300px</span></label>
   <input type="range" id="pe-w" min="1000" max="2400" step="50" value="1300">
   <div class="pos-val" id="pe-w-output">max-width: 1300px</div>
+  <label>영상 높이 (height): <span id="pe-h-val">700px</span></label>
+  <input type="range" id="pe-h" min="400" max="1200" step="10" value="700">
+  <div class="pos-val" id="pe-h-output">height: 700px</div>
   <div style="color:#888; font-size:11px;">값 확인 후 저한테 알려주세요</div>
 </div>
 
@@ -481,6 +484,17 @@
       wVal.textContent = w;
       wOutput.textContent = 'max-width: ' + w;
       document.querySelector('.demo-inner').style.maxWidth = w;
+    });
+
+    // 높이 슬라이더
+    const hSlider = document.getElementById('pe-h');
+    const hVal = document.getElementById('pe-h-val');
+    const hOutput = document.getElementById('pe-h-output');
+    hSlider.addEventListener('input', () => {
+      const h = hSlider.value + 'px';
+      hVal.textContent = h;
+      hOutput.textContent = 'height: ' + h;
+      document.querySelectorAll('.demo-video-wrap video').forEach(v => v.style.height = h);
     });
 
     const origGoSlide = goSlide;
