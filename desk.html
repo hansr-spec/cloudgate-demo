@@ -357,6 +357,15 @@
   <label>영상 높이 (height): <span id="pe-h-val">700px</span></label>
   <input type="range" id="pe-h" min="400" max="1200" step="10" value="700">
   <div class="pos-val" id="pe-h-output">height: 700px</div>
+  <label>왼쪽 패널 너비: <span id="pe-p-val">450px</span></label>
+  <input type="range" id="pe-p" min="200" max="800" step="10" value="450">
+  <div class="pos-val" id="pe-p-output">grid: 450px 1fr</div>
+  <label>제목 크기: <span id="pe-t-val">24px</span></label>
+  <input type="range" id="pe-t" min="14" max="48" step="1" value="24">
+  <div class="pos-val" id="pe-t-output">font-size: 24px</div>
+  <label>설명 크기: <span id="pe-d-val">13px</span></label>
+  <input type="range" id="pe-d" min="10" max="28" step="1" value="13">
+  <div class="pos-val" id="pe-d-output">font-size: 13px</div>
   <div style="color:#888; font-size:11px;">값 확인 후 저한테 알려주세요</div>
 </div>
 
@@ -495,6 +504,39 @@
       hVal.textContent = h;
       hOutput.textContent = 'height: ' + h;
       document.querySelectorAll('.demo-video-wrap video').forEach(v => v.style.height = h);
+    });
+
+    // 왼쪽 패널 너비
+    const pSlider = document.getElementById('pe-p');
+    const pVal = document.getElementById('pe-p-val');
+    const pOutput = document.getElementById('pe-p-output');
+    pSlider.addEventListener('input', () => {
+      const p = pSlider.value + 'px';
+      pVal.textContent = p;
+      pOutput.textContent = 'grid: ' + p + ' 1fr';
+      document.querySelectorAll('.demo-card-inner').forEach(el => el.style.gridTemplateColumns = p + ' 1fr');
+    });
+
+    // 제목 크기
+    const tSlider = document.getElementById('pe-t');
+    const tVal = document.getElementById('pe-t-val');
+    const tOutput = document.getElementById('pe-t-output');
+    tSlider.addEventListener('input', () => {
+      const t = tSlider.value + 'px';
+      tVal.textContent = t;
+      tOutput.textContent = 'font-size: ' + t;
+      document.querySelectorAll('.demo-card-title').forEach(el => el.style.fontSize = t);
+    });
+
+    // 설명 크기
+    const dSlider = document.getElementById('pe-d');
+    const dVal = document.getElementById('pe-d-val');
+    const dOutput = document.getElementById('pe-d-output');
+    dSlider.addEventListener('input', () => {
+      const d = dSlider.value + 'px';
+      dVal.textContent = d;
+      dOutput.textContent = 'font-size: ' + d;
+      document.querySelectorAll('.demo-card-desc, .demo-key-points').forEach(el => el.style.fontSize = d);
     });
 
     const origGoSlide = goSlide;
