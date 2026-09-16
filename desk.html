@@ -350,6 +350,10 @@
   <label>상하 (Y): <span id="pe-y-val">0%</span></label>
   <input type="range" id="pe-y" min="0" max="100" value="0">
   <div class="pos-val" id="pe-output">object-position: 50% 0%</div>
+  <hr style="border-color:rgba(255,255,255,0.15); margin: 8px 0 12px;">
+  <label>화면 너비 (max-width): <span id="pe-w-val">1300px</span></label>
+  <input type="range" id="pe-w" min="1000" max="2400" step="50" value="1300">
+  <div class="pos-val" id="pe-w-output">max-width: 1300px</div>
   <div style="color:#888; font-size:11px;">값 확인 후 저한테 알려주세요</div>
 </div>
 
@@ -467,6 +471,17 @@
     }
     xSlider.addEventListener('input', updatePos);
     ySlider.addEventListener('input', updatePos);
+
+    // 너비 슬라이더
+    const wSlider = document.getElementById('pe-w');
+    const wVal = document.getElementById('pe-w-val');
+    const wOutput = document.getElementById('pe-w-output');
+    wSlider.addEventListener('input', () => {
+      const w = wSlider.value + 'px';
+      wVal.textContent = w;
+      wOutput.textContent = 'max-width: ' + w;
+      document.querySelector('.demo-inner').style.maxWidth = w;
+    });
 
     const origGoSlide = goSlide;
     // 슬라이드 바뀔 때 라벨 업데이트
